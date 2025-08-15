@@ -28,6 +28,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import java.util.concurrent.TimeUnit
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.runtime.remember
+import java.io.File
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,18 +47,59 @@ class MainActivity : ComponentActivity() {
         }) }
 
     // Schedule periodic export every 6 hours
-    val work = PeriodicWorkRequestBuilder<ConversationExportWorker>(6, TimeUnit.HOURS).build()
-    WorkManager.getInstance(this).enqueue(work)
+    val exportWork = PeriodicWorkRequestBuilder<ConversationExportWorker>(6, TimeUnit.HOURS).build()
+    WorkManager.getInstance(this).enqueue(exportWork)
+
+    // Schedule periodic visual state rotation every day
+    val visualStateWork = PeriodicWorkRequestBuilder<VisualStateWorker>(1, TimeUnit.DAYS).build()
+    WorkManager.getInstance(this).enqueue(visualStateWork)
     }
 }
 
 @Composable
+fun SalleIcon(persona: String, mood: String, season: String, event: String?) {
+    val iconFileName = if (event != null)
+        "${persona}_${mood}_${season}_${event}.png"
+    else
+        "${persona}_${mood}_${season}.png"
+    val iconPath = "app/icon_pipeline/output/$iconFileName"
+    val painter: Painter = if (File(iconPath).exists()) {
+        remember { painterResource(iconPath) }
+    } else {
+        painterResource("drawable/ic_default_icon") // fallback
+    }
+    Image(painter = painter, contentDescription = "Salle Icon", modifier = Modifier.size(96.dp))
+}
+
+@Composable
+fun SalleEventBadge(event: String?) {
+    if (event != null) {
+        val badgeColor = when (event) {
+            "product_launch", "graduation", "expedition" -> Color.Green
+            "innovation_day", "mentorship_week", "discovery_day" -> Color.Blue
+            "security_week", "family_reunion", "wellness_retreat" -> Color.Cyan
+            "protest", "rule_break" -> Color.Red
+            "self_care_month" -> Color.Magenta
+            else -> Color.Yellow
+        }
+        Text("Event: $event", color = badgeColor, modifier = Modifier.padding(4.dp))
+    }
+}
+
 @Composable
 fun RootSallieApp(onRequestMic: () -> Unit, vm: SallieViewModel = viewModel()) {
+    val persona by vm.persona.collectAsState()
+    val mood by vm.mood.collectAsState()
+    val season by vm.season.collectAsState()
+    val event by vm.event.collectAsState()
     val theme by vm.theme.collectAsState()
     val scheme = ThemeColorsMapper.schemeFor(theme)
     MaterialTheme(colorScheme = scheme) {
-        SallieHome(onRequestMic = onRequestMic, vm = vm)
+        Column {
+            SalleIcon(persona, mood, season, event)
+            SalleEventBadge(event)
+            SallieHome(onRequestMic = onRequestMic, vm = vm)
+        }
     }
 }
 

@@ -93,6 +93,13 @@ class SallieViewModel(app: Application) : AndroidViewModel(app) {
     private val _featureMetrics = MutableStateFlow<Map<String, Any>>(emptyMap())
     val featureMetrics: StateFlow<Map<String, Any>> = _featureMetrics
 
+    private val _persona = MutableStateFlow("creator")
+    val persona: StateFlow<String> = _persona
+    private val _season = MutableStateFlow("spring")
+    val season: StateFlow<String> = _season
+    private val _event = MutableStateFlow<String?>(null)
+    val event: StateFlow<String?> = _event
+
     private fun appendLog(entry: String) {
         _log.value = (_log.value + "${System.currentTimeMillis()%100000} | $entry").takeLast(60)
     }
@@ -107,7 +114,12 @@ class SallieViewModel(app: Application) : AndroidViewModel(app) {
         return "($mood) ${insight.take(120)}"
     }
 
+    companion object {
+        var instance: SallieViewModel? = null
+    }
+
     init {
+        instance = this
         persistence.loadMood()?.let { m ->
             system.emotionalContext.updateMood(m)
             _mood.value = m
@@ -221,4 +233,137 @@ class SallieViewModel(app: Application) : AndroidViewModel(app) {
         endTs: Long? = null,
         limit: Int? = null
     ): String = persistence.exportConversationJson(conversation.value, speaker, startTs, endTs, limit)
+
+    /**
+     * Selects theme and icon set based on mood, season, and event, per Salle's constitution.
+     */
+    fun selectVisualState(mood: String, season: String, event: String? = null): Pair<String, String> {
+        return when (mood.lowercase()) {
+            "grace" -> when (season.lowercase()) {
+                "spring" -> "Grace & Grind" to if (event == "launch_day") "grace_spring_launch" else "grace_spring_base"
+                "summer" -> "Grace & Grind" to if (event == "anniversary") "grace_summer_anniv" else "grace_summer_base"
+                else -> "Grace & Grind" to "grace_default"
+            }
+            "hustle" -> when (season.lowercase()) {
+                "winter" -> "Hustle Legacy" to "hustle_winter_base"
+                "fall" -> "Hustle Legacy" to if (event == "big_win") "hustle_fall_bigwin" else "hustle_fall_base"
+                else -> "Hustle Legacy" to "hustle_default"
+            }
+            "soul care" -> when (season.lowercase()) {
+                "winter" -> "Soul Care" to if (event == "self_care_week") "soul_winter_selfcare" else "soul_winter_base"
+                "spring" -> "Soul Care" to "soul_spring_base"
+                else -> "Soul Care" to "soul_default"
+            }
+            "grit" -> when (season.lowercase()) {
+                "summer" -> "Southern Grit" to "grit_summer_base"
+                "fall" -> "Southern Grit" to if (event == "fundraiser") "grit_fall_fundraiser" else "grit_fall_base"
+                else -> "Southern Grit" to "grit_default"
+            }
+            "midnight" -> when (season.lowercase()) {
+                "winter" -> "Midnight Hustle" to "midnight_winter_base"
+                "summer" -> "Midnight Hustle" to if (event == "hackathon") "midnight_summer_hackathon" else "midnight_summer_base"
+                else -> "Midnight Hustle" to "midnight_default"
+            }
+            "visionary" -> when (season.lowercase()) {
+                "spring" -> "Visionary" to if (event == "product_launch") "visionary_spring_launch" else "visionary_spring_base"
+                "fall" -> "Visionary" to if (event == "innovation_day") "visionary_fall_innovation" else "visionary_fall_base"
+                else -> "Visionary" to "visionary_default"
+            }
+            "guardian" -> when (season.lowercase()) {
+                "winter" -> "Guardian" to if (event == "security_week") "guardian_winter_security" else "guardian_winter_base"
+                "summer" -> "Guardian" to if (event == "family_reunion") "guardian_summer_reunion" else "guardian_summer_base"
+                else -> "Guardian" to "guardian_default"
+            }
+            "mentor" -> when (season.lowercase()) {
+                "spring" -> "Mentor" to if (event == "graduation") "mentor_spring_graduation" else "mentor_spring_base"
+                "fall" -> "Mentor" to if (event == "mentorship_week") "mentor_fall_mentorship" else "mentor_fall_base"
+                else -> "Mentor" to "mentor_default"
+            }
+            "rebel" -> when (season.lowercase()) {
+                "summer" -> "Rebel" to if (event == "protest") "rebel_summer_protest" else "rebel_summer_base"
+                "winter" -> "Rebel" to if (event == "rule_break") "rebel_winter_rulebreak" else "rebel_winter_base"
+                else -> "Rebel" to "rebel_default"
+            }
+            "explorer" -> when (season.lowercase()) {
+                "spring" -> "Explorer" to if (event == "expedition") "explorer_spring_expedition" else "explorer_spring_base"
+                "fall" -> "Explorer" to if (event == "discovery_day") "explorer_fall_discovery" else "explorer_fall_base"
+                else -> "Explorer" to "explorer_default"
+            }
+            "healer" -> when (season.lowercase()) {
+                "winter" -> "Healer" to if (event == "wellness_retreat") "healer_winter_retreat" else "healer_winter_base"
+                "summer" -> "Healer" to if (event == "self_care_month") "healer_summer_selfcare" else "healer_summer_base"
+                else -> "Healer" to "healer_default"
+            }
+            else -> "Grace & Grind" to "grace_default"
+        }
+    }
+
+    /**
+     * Triggers icon generation using the Python pipeline.
+     */
+    private fun generateIcon(persona: String, mood: String, season: String, event: String? = null) {
+        val eventArg = event ?: ""
+        try {
+            val cmd = arrayOf("python3", "app/icon_pipeline/icon_pipeline.py", persona, mood, season, eventArg)
+            Runtime.getRuntime().exec(cmd)
+            appendLog("Icon generation triggered: ${cmd.joinToString(" ")}")
+        } catch (e: Exception) {
+            appendLog("Icon generation failed: ${e.message}")
+        }
+    }
+
+    /**
+     * Applies theme and icon in sync, respecting Salle's constitution.
+     */
+    fun applyVisualState(persona: String, mood: String, season: String, event: String? = null) {
+        val (theme, iconSet) = selectVisualState(mood, season, event)
+        _theme.value = theme
+        generateIcon(persona, mood, season, event)
+        appendLog("Visual state applied: theme=$theme, iconSet=$iconSet")
+    }
+
+    /**
+     * Schedules seasonal/event-based visual state updates using WorkManager (pseudo-code).
+     */
+    fun scheduleVisualStateUpdates() {
+        // Use WorkManager or AlarmManager for real scheduling
+        // Example: schedule applyVisualState for season changes, holidays, milestones
+        // WorkManager.enqueue(VisualStateWorker(...))
+        appendLog("Visual state scheduling scaffolded.")
+    }
+
+    /**
+     * Example: Automatically update visual state for seasonal/event triggers.
+     */
+    fun autoUpdateVisualState() {
+        val persona = persona.value
+        val mood = mood.value
+        val season = getCurrentSeason()
+        val event = getCurrentEvent()
+        applyVisualState(persona, mood, season, event)
+    }
+
+    private fun getCurrentSeason(): String {
+        val month = java.util.Calendar.getInstance().get(java.util.Calendar.MONTH)
+        return when (month) {
+            in 2..4 -> "spring"
+            in 5..7 -> "summer"
+            in 8..10 -> "fall"
+            else -> "winter"
+        }
+    }
+
+    private fun getCurrentEvent(): String? {
+        val today = java.time.LocalDate.now()
+        return when {
+            today.monthValue == 12 && today.dayOfMonth == 25 -> "family_reunion"
+            today.monthValue == 6 && today.dayOfMonth == 1 -> "product_launch"
+            // Add more event logic here
+            else -> null
+        }
+    }
+
+    fun setPersona(value: String) { _persona.value = value }
+    fun setSeason(value: String) { _season.value = value }
+    fun setEvent(value: String?) { _event.value = value }
 }

@@ -41,3 +41,55 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
     implementation("androidx.work:work-runtime-ktx:2.9.0")
 }
+
+// ...existing code...
+
+val salleMood: String = findProperty("SALLE_MOOD")?.toString() ?: "calm"
+
+// ...existing code...
+
+tasks.register<Exec>("generateSalleIcon") {
+    group = "build setup"
+    description = "Generates Salle's glowing mood orb icon before resources are processed."
+    commandLine("python", "app/icon_pipeline/generate_mood_orb.py", findProperty("SALLE_MOOD")?.toString() ?: "calm", projectDir.toString())
+}
+
+tasks.register("auditSalleIcon") {
+    group = "verification"
+    description = "Verifies Salle's launcher icon purity and build timestamp."
+    doLast {
+        val mipmapBase = File("$projectDir/src/main/res/")
+        val densities = listOf("mipmap-mdpi", "mipmap-hdpi", "mipmap-xhdpi", "mipmap-xxhdpi", "mipmap-xxxhdpi")
+        val now = System.currentTimeMillis()
+        densities.forEach { dpi ->
+            val iconFile = File(mipmapBase, "$dpi/ic_launcher.png")
+            if (!iconFile.exists()) throw GradleException("Missing launcher icon in $dpi")
+            val lastModified = iconFile.lastModified()
+            if (now - lastModified > 1000 * 60 * 10) throw GradleException("Icon in $dpi is stale or manually overwritten!")
+        }
+    }
+}
+
+tasks.register("auditSalleIconStrict") {
+    group = "verification"
+    description = "Strict audit: checks for non-pipeline PNGs and correct mood property."
+    doLast {
+        val mipmapBase = File("$projectDir/src/main/res/")
+        val densities = listOf("mipmap-mdpi", "mipmap-hdpi", "mipmap-xhdpi", "mipmap-xxhdpi", "mipmap-xxxhdpi")
+        val allowedMoods = setOf("calm", "focused", "energized", "reflective", "guarded", "celebratory", "hopeful", "melancholy", "playful", "resolute")
+        val mood = findProperty("SALLE_MOOD")?.toString() ?: "calm"
+        if (mood !in allowedMoods) throw GradleException("Invalid mood: $mood")
+        densities.forEach { dpi ->
+            val dir = File(mipmapBase, dpi)
+            dir.listFiles()?.forEach { file ->
+                if (file.name != "ic_launcher.png") throw GradleException("Unexpected PNG in $dpi: ${file.name}")
+            }
+        }
+    }
+}
+
+tasks.named("preBuild") {
+    dependsOn("generateSalleIcon")
+    dependsOn("auditSalleIcon")
+    dependsOn("auditSalleIconStrict")
+}
