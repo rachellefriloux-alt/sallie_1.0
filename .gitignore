@@ -1,34 +1,59 @@
-# Gradle files
+### Android / Kotlin ###
+*.iml
 .gradle/
 build/
-
-# Local configuration file (sdk path, etc)
+*/build/
 local.properties
-
-# Log/OS Files
-*.log
-
-# Android Studio generated files and folders
 captures/
 .externalNativeBuild/
 .cxx/
-*.aab
-*.apk
-output-metadata.json
 
-# IntelliJ
-*.iml
+### IntelliJ / IDEA ###
 .idea/
-misc.xml
-deploymentTargetDropDown.xml
-render.experimental.xml
+*.ipr
+*.iws
+*.swp
 
-# Keystore files
-*.jks
-*.keystore
+### JVM ###
+*.class
+*.jar
+*.war
+*.ear
+hs_err_pid*
 
-# Google Services (e.g. APIs or Firebase)
+### Logs ###
+*.log
+
+### OS ###
+.DS_Store
+Thumbs.db
+
+### Node / Frontend ###
+node_modules/
+dist/
+pnpm-lock.yaml
+yarn.lock
+
+### Generated ###
+app/build/
+core/build/
+feature/build/
+ai/build/
+components/build/
+
+### Backup / Archives ###
+sallie_workspace_backup.tar.gz
+*.zip
+*.tgz
+*.tar.gz
+
+### Misc ###
+/.idea
+.vscode/**.history
+.env
+
+### Firebase (if present) ###
 google-services.json
-
-# Android Profiling
-*.hprof
+serviceAccountKey.json
+*.jks
+keystore.properties
