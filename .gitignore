@@ -54,3 +54,7 @@ sallie_workspace_backup.tar.gz
 
 ### Firebase (if present) ###
 google-services.json
+
+serviceAccountKey.json
+*.jks
+keystore.properties
