@@ -21,8 +21,7 @@ class TrustEngine {
         return "Action '$action' confirmed."
     }
 
-    fun getActionHistory(): List<String> = actionHistory
-    fun getRedactionHistory(): List<String> = redactionHistory
+    // actionHistory & redactionHistory properties expose getters
 
     // Future: add hooks for AI, device, cloud integrations
 }

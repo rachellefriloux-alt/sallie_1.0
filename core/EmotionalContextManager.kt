@@ -21,7 +21,7 @@ class EmotionalContextManager {
     }
 
     fun reflectContext(): String = "Mood: $currentMood, Fatigue: $fatigueLevel"
-    fun getMoodHistory(): List<Pair<String, Long>> = moodHistory
+    // direct property access provides getter
 
     // Future: add hooks for AI, device, cloud integrations
 }

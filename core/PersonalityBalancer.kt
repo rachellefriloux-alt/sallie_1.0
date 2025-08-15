@@ -13,7 +13,7 @@ class PersonalityBalancer {
 
     fun getTrait(trait: String): Int = traits[trait] ?: 0
     fun balance(): String = "Personality balanced: ${traits.toString()}"
-    fun getPersonaHistory(): List<Map<String, Int>> = personaHistory
+    // personaHistory property acts as getter
 
     // Future: add hooks for AI, device, cloud integrations
 }

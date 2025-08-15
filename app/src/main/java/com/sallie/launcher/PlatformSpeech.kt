@@ -66,7 +66,7 @@ class PlatformASR(
     override fun onEvent(eventType: Int, params: Bundle?) {}
 }
 
-class PlatformTTS(app: Application, private val onState: (String) -> Unit) : TextToSpeech(app), TextToSpeech.OnInitListener {
+class PlatformTTS(app: Application, private val onState: (String) -> Unit) : TextToSpeech.OnInitListener {
     private var engine: TextToSpeech? = null
     private val application: Application = app
 

@@ -21,7 +21,7 @@ class SallieSystem {
     val fallbackScripts = EmotionalFallbackScripts()
     val localLLM = LocalLLMManager()
     val emotionalContext = EmotionalContextManager()
-    val memory = MemoryManager()
+    val memoryManager = MemoryManager()
     val philosophy = PhilosophyEngine()
     val selfEvolution = SelfEvolutionEngine()
     val trust = TrustEngine()

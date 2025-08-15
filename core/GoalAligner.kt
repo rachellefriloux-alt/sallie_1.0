@@ -15,10 +15,7 @@ class GoalAligner {
 
     fun setPreference(key: String, value: String) { preferences[key] = value }
     fun updateEmotion(key: String, value: String) { emotionalContext[key] = value }
-    fun getGoals(): List<String> = goals
-    fun getGoalHistory(): List<String> = goalHistory
-    fun getPreferences(): Map<String, String> = preferences
-    fun getEmotionalContext(): Map<String, String> = emotionalContext
+    // Properties expose getters; explicit functions removed to avoid JVM signature clash
 
     // Future: add hooks for AI, device, cloud integrations
 }

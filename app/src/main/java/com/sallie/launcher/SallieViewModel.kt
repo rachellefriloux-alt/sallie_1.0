@@ -10,7 +10,7 @@ import com.sallie.feature.TaskOrchestrator.Task
 import com.sallie.feature.FeatureRegistry
 
 class SallieViewModel(app: Application) : AndroidViewModel(app) {
-    private val system = SallieSystem()
+    val system = SallieSystem()
     private val persistence = SalliePersistence(app.applicationContext)
     // Conversation & silence tracking additions
     private val _conversation = MutableStateFlow<List<ConversationEntry>>(emptyList())

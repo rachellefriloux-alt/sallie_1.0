@@ -4,5 +4,5 @@ package com.sallie.ai
 class RuntimeSwitcher {
     var currentModel: String = "Gemini"
     fun switchModel(model: String) { currentModel = model }
-    fun getCurrentModel(): String = currentModel
+    // direct property access provides the getter; removed duplicate getCurrentModel() to avoid clash
 }

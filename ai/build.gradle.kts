@@ -9,3 +9,9 @@ dependencies {
     // implementation("com.openai:chatgpt-client:1.0.0")
     // implementation("com.microsoft.copilot:copilot-client:1.0.0")
 }
+
+kotlin {
+    sourceSets.main {
+        kotlin.srcDir(".") // allow top-level .kt files in module root
+    }
+}

@@ -42,4 +42,3 @@ class MessageDraftManager {
     fun getDraft(draftId: String): Draft? = drafts[draftId]
     fun listDrafts(): List<Draft> = drafts.values.sortedBy { it.created }
 }
-}

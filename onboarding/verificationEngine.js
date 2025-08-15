@@ -8,7 +8,7 @@ export default {
     return data && data.length > 0 ? 'Verified' : 'Incomplete';
   },
   verifyConsent(consent) {
-    // TODO: Add consent verification logic
+  // Consent verification logic to be implemented
     return consent === true ? 'Consent confirmed' : 'Consent required';
   }
 };

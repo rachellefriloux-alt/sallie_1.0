@@ -2,10 +2,10 @@ package com.sallie.feature
 
 // Reflects user values and philosophy
 class ValuesReflector {
-    var values = listOf<String>()
+    private var values = listOf<String>()
     private val history: MutableList<List<String>> = mutableListOf()
 
-    fun setValues(newValues: List<String>) {
+    fun updateValues(newValues: List<String>) {
         history.add(newValues)
         values = newValues
     }

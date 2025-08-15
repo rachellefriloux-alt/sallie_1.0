@@ -11,8 +11,7 @@ class SelfEvolutionEngine {
         // Future: sync to cloud, trigger emotional logic, analytics
     }
 
-    fun getUpgradeHistory(): List<String> = upgradeLog
-    fun getEvolutionAnalytics(): Map<String, Int> = evolutionAnalytics
+    // upgradeLog & evolutionAnalytics properties expose getters
 
     // Future: add hooks for AI, device, cloud integrations
 }

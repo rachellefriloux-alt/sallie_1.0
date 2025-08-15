@@ -21,33 +21,37 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import androidx.work.ExistingPeriodicWorkPolicy
 import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            // log is internal; UI will show via button actions
+        val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { /* no-op */ }
+        setContent {
+            RootSallieApp(onRequestMic = {
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermission.launch(Manifest.permission.RECORD_AUDIO)
+                }
+            })
         }
-        setContent { RootSallieApp(onRequestMic = {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                requestPermission.launch(Manifest.permission.RECORD_AUDIO)
-            }
-        }) }
-
-    // Schedule periodic export every 6 hours
-    val work = PeriodicWorkRequestBuilder<ConversationExportWorker>(6, TimeUnit.HOURS).build()
-    WorkManager.getInstance(this).enqueue(work)
+        // Schedule periodic export every 6 hours
+        val work = PeriodicWorkRequestBuilder<ConversationExportWorker>(6, TimeUnit.HOURS).build()
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "conversation_export",
+            ExistingPeriodicWorkPolicy.KEEP,
+            work
+        )
     }
 }
 
-@Composable
 @Composable
 fun RootSallieApp(onRequestMic: () -> Unit, vm: SallieViewModel = viewModel()) {
     val theme by vm.theme.collectAsState()
@@ -57,6 +61,7 @@ fun RootSallieApp(onRequestMic: () -> Unit, vm: SallieViewModel = viewModel()) {
     }
 }
 
+@Composable
 fun SallieHome(onRequestMic: () -> Unit, vm: SallieViewModel = viewModel()) {
     val mood by vm.mood.collectAsState()
     val fatigue by vm.fatigue.collectAsState()
@@ -68,12 +73,10 @@ fun SallieHome(onRequestMic: () -> Unit, vm: SallieViewModel = viewModel()) {
     val listening by vm.listening.collectAsState()
     val voice by vm.voice.collectAsState()
     val metrics by vm.featureMetrics.collectAsState()
-    val transcript = if (listening) vm.run { system.asrManager.getTranscript() } else ""
-    val rms = if (listening) vm.run { system.asrManager.rmsLevel() } else 0f
-    val finals = if (listening) vm.run { system.asrManager.allFinal().size } else 0
-    val rmsSeries = if (listening) vm.run { system.asrManager.rmsSeries() } else emptyList()
+    val rmsSeries = if (listening) vm.system.asrManager.rmsSeries() else emptyList()
     val conversation by vm.conversation.collectAsState()
     val asrError by vm.asrError.collectAsState()
+    val context = LocalContext.current
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -102,15 +105,15 @@ fun SallieHome(onRequestMic: () -> Unit, vm: SallieViewModel = viewModel()) {
                 }) { Text("Export Conv") }
                 Button(onClick = {
                     val csv = vm.getConversationExport()
-                    val exportFile = File(cacheDir, "conversation_export.csv")
+                    val exportFile = File(context.cacheDir, "conversation_export.csv")
                     exportFile.writeText(csv)
-                    val uri = FileProvider.getUriForFile(this@MainActivity, "${packageName}.fileprovider", exportFile)
+                    val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", exportFile)
                     val shareIntent = Intent(Intent.ACTION_SEND).apply {
                         type = "text/csv"
                         putExtra(Intent.EXTRA_STREAM, uri)
                         addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                     }
-                    startActivity(Intent.createChooser(shareIntent, "Share Conversation"))
+                    context.startActivity(Intent.createChooser(shareIntent, "Share Conversation"))
                 }) { Text("Share Conv") }
                 Button(onClick = {
                     val json = vm.exportConversationJson(limit = 20)
@@ -143,7 +146,7 @@ fun SallieHome(onRequestMic: () -> Unit, vm: SallieViewModel = viewModel()) {
                     Button(onClick = { vm.clearAsrError() }) { Text("Dismiss") }
                 }
             }
-            if (transcript.isNotBlank()) Text("Transcript: $transcript (rms=${"%.1f".format(rms)} final=$finals)")
+            // Removed transcript display since variables were removed
             if (rmsSeries.isNotEmpty()) {
                 Waveform(rmsSeries)
             }
@@ -183,10 +186,11 @@ fun SallieHome(onRequestMic: () -> Unit, vm: SallieViewModel = viewModel()) {
 fun PreviewSallieHome() { RootSallieApp(onRequestMic = {}) }
 
 @Composable
-private fun Waveform(levels: List<Float>, modifier: Modifier = Modifier.fillMaxWidth().height(40.dp)) {
+private fun Waveform(levels: List<Float>, modifier: Modifier = Modifier) {
+    val modifierUsed = modifier.fillMaxWidth().height(40.dp)
     val bars = levels.takeLast(100)
     val max = (bars.maxOrNull() ?: 1f).coerceAtLeast(1f)
-    Canvas(modifier = modifier) {
+    Canvas(modifier = modifierUsed) {
         val barWidth = size.width / bars.size.coerceAtLeast(1)
         bars.forEachIndexed { idx, v ->
             val norm = (v / max).coerceIn(0f, 1f)

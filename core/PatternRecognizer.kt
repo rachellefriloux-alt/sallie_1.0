@@ -11,7 +11,7 @@ class PatternRecognizer {
         return pattern
     }
 
-    fun getPatternHistory(): List<String> = patternHistory
+    // patternHistory property acts as getter
 
     // Future: add hooks for AI, device, cloud integrations
 }

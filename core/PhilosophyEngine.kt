@@ -3,7 +3,7 @@ package com.sallie.core
 // Aligns actions with values and legacy
 class PhilosophyEngine {
     var userValues: List<String> = listOf()
-    var legacyGoals: List<String> = listOf()
+    private var legacyGoals: List<String> = listOf()
     private val valueHistory: MutableList<List<String>> = mutableListOf()
     private val legacyHistory: MutableList<List<String>> = mutableListOf()
 
@@ -13,7 +13,7 @@ class PhilosophyEngine {
         // Future: sync to memory, analytics, emotional triggers
     }
 
-    fun setLegacyGoals(goals: List<String>) {
+    fun updateLegacyGoals(goals: List<String>) {
         legacyGoals = goals
         legacyHistory.add(goals)
         // Future: sync to memory, analytics

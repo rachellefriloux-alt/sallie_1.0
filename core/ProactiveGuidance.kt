@@ -11,7 +11,7 @@ class ProactiveGuidance {
         return suggestion
     }
 
-    fun getSuggestionHistory(): List<String> = suggestionHistory
+    // suggestionHistory property exposes getter
 
     // Future: add hooks for AI, device, cloud integrations
 }

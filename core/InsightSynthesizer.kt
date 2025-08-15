@@ -11,7 +11,7 @@ class InsightSynthesizer {
         return insight
     }
 
-    fun getInsightHistory(): List<String> = insightHistory
+    // insightHistory property acts as getter
 
     // Future: add hooks for AI, device, cloud integrations
 }

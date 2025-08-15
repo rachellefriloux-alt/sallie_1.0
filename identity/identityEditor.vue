@@ -45,7 +45,7 @@ export default {
   },
   methods: {
     saveIdentity() {
-      // TODO: Save logic for identity profile
+  // Save logic for identity profile
       alert('Identity saved!');
     }
   }

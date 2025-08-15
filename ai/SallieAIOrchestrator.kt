@@ -3,20 +3,17 @@ package com.sallie.ai
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-// Placeholder for multi-AI orchestration
+// Multi-AI orchestration selecting appropriate pipeline.
 class SallieAIOrchestrator {
+    private val router = AIModelRouter()
+    private val localLLM = LocalLLMManager()
+    private val multiOrchestrator = MultiAIOrchestrator()
+
     suspend fun handleUserAction(input: String, context: Map<String, Any>): String = withContext(Dispatchers.IO) {
-        // Route to Gemini, ChatGPT, Copilot, or local LLM based on input/intent
-            // Route input to the best AI model based on context
-            val model = router.selectModel(input)
-            val response = when (model) {
-                "local" -> localLLM.generateResponse(input)
-                "multi" -> multiOrchestrator.orchestrate(input)
-                else -> "No suitable model found."
-            }
-            return@withContext response
+        val model = router.selectModel(input)
+        when (model) {
+            AIModelRouter.Model.LOCAL -> localLLM.runLocalModel(input)
+            AIModelRouter.Model.COPILOT, AIModelRouter.Model.CHATGPT, AIModelRouter.Model.GEMINI -> multiOrchestrator.orchestrate(input)
+        }
     }
-        private val router = AIModelRouter()
-        private val localLLM = LocalLLMManager()
-        private val multiOrchestrator = MultiAIOrchestrator()
 }

@@ -19,6 +19,7 @@ class MemoryManager {
     }
     fun getQuickCaptures(): List<String> = quickCapture
     fun getMemoryHistory(): List<Pair<String, String>> = memoryHistory
+    fun fetchRecentMemories(limit: Int): List<String> = memoryHistory.takeLast(limit).map { "${it.first}=${it.second}" }
 
     // Future: add hooks for AI, device, cloud integrations
 }
