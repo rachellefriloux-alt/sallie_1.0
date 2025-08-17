@@ -1,14 +1,14 @@
 <template>
   <div class="onboarding-editor">
     <h2>Edit Onboarding Flow</h2>
-    <form>
+    <form @submit.prevent="saveStep">
       <label>Step:
-        <input type="text" v-model="step" />
+        <input v-model="step" type="text" />
       </label>
       <label>Description:
         <textarea v-model="description"></textarea>
       </label>
-      <button type="button" @click="saveStep">Save Step</button>
+      <button type="submit">Save Step</button>
     </form>
   </div>
 </template>
@@ -16,6 +16,7 @@
 <script>
 export default {
   name: 'OnboardingEditor',
+  emits: ['save'],
   data() {
     return {
       step: '',
@@ -24,12 +25,21 @@ export default {
   },
   methods: {
     saveStep() {
-  // Save onboarding step to Sallie's repository
-      const saveStep = async () => {
-        await OnboardingRepository.save(this.onboardingStep)
+      const record = {
+        step: this.step.trim(),
+        description: this.description.trim(),
+        savedAt: new Date().toISOString()
+      };
+      if (!record.step) {
+        alert('Step name required');
+        return;
       }
-      saveStep()
+      window.onboardingSteps = window.onboardingSteps || [];
+      window.onboardingSteps.push(record);
+      this.$emit('save', record);
       alert('Onboarding step saved!');
+      this.step = '';
+      this.description = '';
     }
   }
 };

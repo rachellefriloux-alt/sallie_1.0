@@ -1,21 +1,31 @@
+// Explicit settings for Sallie multi-module workspace
 pluginManagement {
-	repositories {
-		google()
-		mavenCentral()
-		gradlePluginPortal()
-	}
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
 }
 
 dependencyResolutionManagement {
-	repositories {
-		google()
-		mavenCentral()
-	}
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
 }
 
-rootProject.name = "Sallie"
+rootProject.name = "sallie_1.0"
+
 include(":app")
-include(":ai")
 include(":core")
 include(":feature")
+include(":ai")
 include(":components")
+include(":identity")
+include(":onboarding")
+include(":personaCore")
+include(":responseTemplates")
+include(":tone")
+include(":ui")
+include(":values")

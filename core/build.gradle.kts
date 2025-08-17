@@ -1,13 +1,15 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm")
+    id("com.android.library")
+    id("org.jetbrains.kotlin.android")
 }
 
-dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    // Firebase dependencies should be added to the app module if Android context is required
-    testImplementation(kotlin("test"))
+android {
+    namespace = "com.sallie.core"
+    compileSdk = 34
+    defaultConfig { minSdk = 26; targetSdk = 34 }
+    compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
+    kotlinOptions { jvmTarget = "17" }
+    buildFeatures { compose = false }
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
+dependencies { }

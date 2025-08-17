@@ -65,20 +65,24 @@ def create_glowing_mist_orb(start_hex, end_hex, size=512, glow_strength=0.6, mis
     return img
 
 def main():
-    mood = sys.argv[1] if len(sys.argv) > 1 else "calm"
-    # Always use absolute path to res directory
-    base_dir = Path(__file__).parent.parent / "src" / "main" / "res"
-    # Correction: use app/src/main/res for output
-    app_res_dir = Path(__file__).parent.parent.parent / "app" / "src" / "main" / "res"
-    start_hex, end_hex = MOOD_GRADIENTS.get(mood, MOOD_GRADIENTS["calm"])
-    orb = create_glowing_mist_orb(start_hex, end_hex)
-    for dpi, size in DENSITIES.items():
-        out_dir = app_res_dir / dpi
-        out_dir.mkdir(parents=True, exist_ok=True)
-        orb_resized = orb.resize((size, size), Image.LANCZOS)
-        out_path = out_dir / "ic_launcher.png"
-        print(f"Saving icon to: {out_path}")
-        orb_resized.save(out_path)
+    try:
+        mood = sys.argv[1] if len(sys.argv) > 1 else "calm"
+        # Always use absolute path to res directory
+        base_dir = Path(__file__).parent.parent / "src" / "main" / "res"
+        # Correction: use app/src/main/res for output
+        app_res_dir = Path(__file__).parent.parent.parent / "app" / "src" / "main" / "res"
+        start_hex, end_hex = MOOD_GRADIENTS.get(mood, MOOD_GRADIENTS["calm"])
+        orb = create_glowing_mist_orb(start_hex, end_hex)
+        for dpi, size in DENSITIES.items():
+            out_dir = app_res_dir / dpi
+            out_dir.mkdir(parents=True, exist_ok=True)
+            orb_resized = orb.resize((size, size), Image.LANCZOS)
+            out_path = out_dir / "ic_launcher.png"
+            print(f"Saving icon to: {out_path}")
+            orb_resized.save(out_path)
+    except Exception as e:
+        print(f"ERROR: {e}", file=sys.stderr)
+        sys.exit(2)
 
 if __name__ == "__main__":
     main()

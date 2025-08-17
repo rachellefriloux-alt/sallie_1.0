@@ -1,23 +1,23 @@
 <template>
   <div class="persona-editor">
     <h2>Edit Persona Profiles</h2>
-    <form>
+  <form @submit.prevent="savePersona">
       <label>Persona Name:
-        <input type="text" v-model="persona.name" />
+  <input v-model="persona.name" type="text" />
       </label>
       <label>Tone:
-        <input type="text" v-model="persona.tone" />
+  <input v-model="persona.tone" type="text" />
       </label>
       <label>Validation:
-        <input type="text" v-model="persona.validation" />
+  <input v-model="persona.validation" type="text" />
       </label>
       <label>Fallback:
-        <input type="text" v-model="persona.fallback" />
+  <input v-model="persona.fallback" type="text" />
       </label>
       <label>Lexicon:
         <textarea v-model="lexiconText"></textarea>
       </label>
-      <button type="button" @click="savePersona">Save</button>
+  <button type="submit">Save</button>
     </form>
   </div>
 </template>
@@ -25,6 +25,7 @@
 <script>
 export default {
   name: 'PersonaEditor',
+  emits: ['save'],
   data() {
     return {
       persona: {
@@ -38,7 +39,8 @@ export default {
   },
   methods: {
     savePersona() {
-      // TODO: Save logic for persona profile
+  // Placeholder: Save logic for persona profile
+  this.$emit('save', this.persona)
       alert('Persona saved!');
     }
   }

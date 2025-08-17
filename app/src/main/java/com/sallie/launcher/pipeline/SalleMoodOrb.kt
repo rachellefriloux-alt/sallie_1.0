@@ -1,91 +1,75 @@
+
 package com.sallie.launcher.pipeline
 
-import java.awt.image.BufferedImage
-import javax.imageio.ImageIO
-import java.awt.BasicStroke
-import java.awt.RenderingHints
-import java.awt.RadialGradientPaint
-import java.awt.Color as AwtColor
-import java.io.File
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.RadialGradient
+import android.graphics.Shader
 
 val moodColors = mapOf(
-    "calm"        to listOf(AwtColor(0xB0, 0xE0, 0xE6), AwtColor(0xD8, 0xBF, 0xD8)),
-    "focused"     to listOf(AwtColor(0x00, 0xCE, 0xD1), AwtColor(0x46, 0x82, 0xB4)),
-    "energized"   to listOf(AwtColor(0xFF, 0xA5, 0x00), AwtColor(0xFF, 0x45, 0x00)),
-    "reflective"  to listOf(AwtColor(0x93, 0x70, 0xDB), AwtColor(0x4B, 0x00, 0x82)),
-    "guarded"     to listOf(AwtColor(0x55, 0x6B, 0x2F), AwtColor(0x2F, 0x4F, 0x4F)),
-    "celebratory" to listOf(AwtColor(0xFF, 0xD7, 0x00), AwtColor(0xFF, 0x69, 0xB4)),
-    "hopeful"     to listOf(AwtColor(0xAD, 0xFF, 0x2F), AwtColor(0x40, 0xE0, 0xD0)),
-    "melancholy"  to listOf(AwtColor(0x70, 0x80, 0x90), AwtColor(0x2E, 0x2E, 0x2E)),
-    "playful"     to listOf(AwtColor(0xFF, 0xB6, 0xC1), AwtColor(0xFF, 0xE4, 0xB5)),
-    "resolute"    to listOf(AwtColor(0x8B, 0x00, 0x00), AwtColor(0x00, 0x00, 0x8B))
+    "calm" to listOf(Color.parseColor("#B0E0E6"), Color.parseColor("#D8BFD8")),
+    "focused" to listOf(Color.parseColor("#00CED1"), Color.parseColor("#4682B4")),
+    "energized" to listOf(Color.parseColor("#FFA500"), Color.parseColor("#FF4500")),
+    "reflective" to listOf(Color.parseColor("#9370DB"), Color.parseColor("#4B0082")),
+    "guarded" to listOf(Color.parseColor("#556B2F"), Color.parseColor("#2F4F4F")),
+    "celebratory" to listOf(Color.parseColor("#FFD700"), Color.parseColor("#FF69B4")),
+    "hopeful" to listOf(Color.parseColor("#ADFF2F"), Color.parseColor("#40E0D0")),
+    "melancholy" to listOf(Color.parseColor("#708090"), Color.parseColor("#2E2E2E")),
+    "playful" to listOf(Color.parseColor("#FFB6C1"), Color.parseColor("#FFE4B5")),
+    "resolute" to listOf(Color.parseColor("#8B0000"), Color.parseColor("#00008B")),
 )
 
 fun createGlowingMistOrb(
-    gradientStart: AwtColor,
-    gradientEnd: AwtColor,
+    gradientStart: Int,
+    gradientEnd: Int,
     glowStrength: Float = 0.6f,
     mistDensity: Float = 0.35f,
-    sizePx: Int = 512
-): BufferedImage {
-    val image = BufferedImage(sizePx, sizePx, BufferedImage.TYPE_INT_ARGB)
-    val g2d = image.createGraphics()
-    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+    sizePx: Int = 512,
+): Bitmap {
+    val bitmap = Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
     val center = sizePx / 2f
     val radius = sizePx / 2.2f
-    val gradient = RadialGradientPaint(
-        java.awt.Point(center.toInt(), center.toInt()),
-        radius,
-        floatArrayOf(0f, 1f),
-        arrayOf(gradientStart, gradientEnd)
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    paint.shader = RadialGradient(
+        center, center, radius,
+        gradientStart, gradientEnd,
+        Shader.TileMode.CLAMP
     )
-    g2d.paint = gradient
-    g2d.fillOval(
-        (center - radius).toInt(),
-        (center - radius).toInt(),
-        (radius * 2).toInt(),
-        (radius * 2).toInt()
-    )
+    canvas.drawCircle(center, center, radius, paint)
+
+    // Glowing effect
     repeat(4) { i ->
-        val alpha = glowStrength / (i + 1)
-        g2d.color = AwtColor(gradientStart.red, gradientStart.green, gradientStart.blue, (alpha * 255).toInt())
-        g2d.stroke = BasicStroke((6 + i * 4).toFloat())
-        g2d.drawOval(
-            (center - radius - i * 4).toInt(),
-            (center - radius - i * 4).toInt(),
-            (radius * 2 + i * 8).toInt(),
-            (radius * 2 + i * 8).toInt()
-        )
+        val alpha = (glowStrength / (i + 1) * 255).toInt()
+        val glowPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+        glowPaint.color = gradientStart
+        glowPaint.alpha = alpha
+        glowPaint.style = Paint.Style.STROKE
+        glowPaint.strokeWidth = (6 + i * 4).toFloat()
+        canvas.drawCircle(center, center, radius + i * 4, glowPaint)
     }
+
+    // Mist particles
     val mistParticles = (sizePx * mistDensity).toInt()
+    val mistPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    mistPaint.color = Color.WHITE
     repeat(mistParticles) {
-        val px = (Math.random() * sizePx).toInt()
-        val py = (Math.random() * sizePx).toInt()
-        val alpha = (Math.random() * 0.15f).toFloat()
-        g2d.color = AwtColor(255, 255, 255, (alpha * 255).toInt())
-        g2d.fillOval(px, py, 4, 4)
+        val px = (Math.random() * sizePx).toFloat()
+        val py = (Math.random() * sizePx).toFloat()
+        mistPaint.alpha = ((Math.random() * 0.15f * 255)).toInt()
+        canvas.drawCircle(px, py, 2f, mistPaint)
     }
-    g2d.dispose()
-    return image
+    return bitmap
 }
 
-fun saveOrbForMood(projectDir: String, mood: String) {
+// Stub for saving orb image (Android file APIs required, not implemented here)
+fun saveOrbForMood(
+    mood: String,
+    sizePx: Int = 512
+) : Bitmap {
     val (start, end) = moodColors[mood] ?: moodColors["calm"]!!
-    val orb = createGlowingMistOrb(start, end)
-    val mipmapBase = File("$projectDir/src/main/res/")
-    val densities = listOf(
-        "mipmap-mdpi" to 48,
-        "mipmap-hdpi" to 72,
-        "mipmap-xhdpi" to 96,
-        "mipmap-xxhdpi" to 144,
-        "mipmap-xxxhdpi" to 192
-    )
-    densities.forEach { (dpi, size) ->
-        val dir = File(mipmapBase, dpi)
-        dir.mkdirs()
-        val scaled = BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB).apply {
-            createGraphics().drawImage(orb, 0, 0, size, size, null)
-        }
-        ImageIO.write(scaled, "png", File(dir, "ic_launcher.png"))
-    }
+    return createGlowingMistOrb(start, end, sizePx = sizePx)
+    // Saving to file would require Android Context and permissions
 }

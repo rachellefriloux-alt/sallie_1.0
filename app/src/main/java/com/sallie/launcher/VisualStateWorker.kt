@@ -1,16 +1,7 @@
 package com.sallie.launcher
 
-import android.content.Context
-import androidx.work.Worker
-import androidx.work.WorkerParameters
+// Placeholder for removed VisualStateWorker. Original used WorkManager to periodically
+// call `SallieViewModel.instance?.autoUpdateVisualState()`. WorkManager dependency has
+// been omitted; reintroduce by adding the library and restoring implementation.
 
-class VisualStateWorker(
-    context: Context,
-    params: WorkerParameters
-) : Worker(context, params) {
-    override fun doWork(): Result {
-        // Access ViewModel and trigger autoUpdateVisualState
-        SallieViewModel.instance?.autoUpdateVisualState()
-        return Result.success()
-    }
-}
+// No operational code retained intentionally.

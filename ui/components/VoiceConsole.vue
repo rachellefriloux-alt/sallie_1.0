@@ -13,7 +13,7 @@
         </select>
       </label>
       <label>Message:
-        <input type="text" v-model="message" />
+        <input v-model="message" type="text" />
       </label>
       <button @click="speak">Speak</button>
     </div>
@@ -38,12 +38,12 @@ export default {
   },
   methods: {
     speak() {
-  // Integrate with Sallie's voice engine
-      const speakInput = async () => {
-        this.voiceResponse = await VoiceEngine.speak(this.inputText)
+      const rendered = `${this.selectedPersona} (${this.selectedState}): ${this.message.trim()}`;
+      this.output = rendered;
+      if (window.speechSynthesis && rendered) {
+        const utterance = new SpeechSynthesisUtterance(rendered);
+        speechSynthesis.speak(utterance);
       }
-      speakInput()
-      this.output = `${this.selectedPersona} (${this.selectedState}): ${this.message}`;
     }
   }
 };

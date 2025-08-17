@@ -5,7 +5,9 @@ export default {
   currentPersona: 'Just Me',
   switchPersona(newPersona) {
     this.currentPersona = newPersona;
-    // TODO: Integrate with mood signal and UI
+  // Placeholder: Integrate with mood signal and UI
+  this.mood = this.mood || 'neutral';
+  this.updateUI(this.mood);
     return `Persona switched to ${newPersona}`;
   },
   getCurrentPersona() {

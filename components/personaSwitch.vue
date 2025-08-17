@@ -4,7 +4,7 @@
     <h2>Persona Switch</h2>
     <div v-for="persona in personas" :key="persona.name" class="persona-option">
       <label>
-        <input type="radio" :value="persona.name" v-model="selectedPersona" @change="onPersonaChange" />
+  <input v-model="selectedPersona" type="radio" :value="persona.name" @change="onPersonaChange" />
         <span>{{ persona.label }}</span>
         <span class="persona-desc">{{ persona.description }}</span>
       </label>
@@ -45,11 +45,13 @@ export default {
   },
   methods: {
     onPersonaChange() {
-      // TODO: Integrate with persona engine and mood signal
+      // Placeholder: integrate with persona engine
+      this.currentPersona = this.selectedPersona;
     },
     fallbackToDefault() {
       this.selectedPersona = 'Just Me';
-      // TODO: Fallback logic
+      // Placeholder: Fallback logic
+      this.currentPersona = 'fallback';
     },
     editLabel() {
       const persona = this.personas.find(p => p.name === this.selectedPersona);

@@ -1,8 +1,15 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm")
+    id("com.android.library")
+    id("org.jetbrains.kotlin.android")
 }
 
-dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    // Compose and Material3 dependencies are only for Android modules
+android {
+    namespace = "com.sallie.components"
+    compileSdk = 34
+    defaultConfig { minSdk = 26; targetSdk = 34 }
+    compileOptions { sourceCompatibility = JavaVersion.VERSION_17; targetCompatibility = JavaVersion.VERSION_17 }
+    kotlinOptions { jvmTarget = "17" }
+    buildFeatures { compose = false }
 }
+
+dependencies { implementation(project(":core")) }

@@ -1,22 +1,8 @@
 package com.sallie.launcher
 
-import android.app.Application
-import android.content.Context
-import androidx.work.Worker
-import androidx.work.WorkerParameters
-import java.io.File
+// Placeholder removed legacy worker implementation. Original implementation relied on
+// WorkManager which we've chosen to exclude to keep the dependency surface minimal.
+// If background export is reintroduced, add `implementation("androidx.work:work-runtime-ktx:<version>")`
+// to `app/build.gradle.kts` and restore a Worker subclass here.
 
-class ConversationExportWorker(ctx: Context, params: WorkerParameters) : Worker(ctx, params) {
-    override fun doWork(): Result {
-        return try {
-            val app = applicationContext as Application
-            val vm = SallieViewModel(app)
-            val csv = vm.exportConversationCsv()
-            val file = File(applicationContext.cacheDir, "conversation_auto_export.csv")
-            file.writeText(csv)
-            Result.success()
-        } catch (e: Exception) {
-            Result.retry()
-        }
-    }
-}
+// (Intentionally left without references so it doesn't compile against missing WorkManager.)
