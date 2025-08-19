@@ -8,11 +8,9 @@
 // Top-level build file for Sallie 1.0
 // Root build: alignment, verification, coverage, formatting – privacy-first (no new network code)
 plugins {
-    kotlin("jvm") version "1.6.10" apply false
-    id("org.jlleitschuh.gradle.ktlint") version "10.2.1" apply false
-    jacoco
-    id("org.jetbrains.kotlin.jvm") version "1.8.20" apply false
+    kotlin("jvm") version "1.8.20" apply false
     id("org.jlleitschuh.gradle.ktlint") version "11.6.1" apply false
+    jacoco
 }
 
 val coverageMin: String = providers.environmentVariable("COVERAGE_MIN")
@@ -34,6 +32,7 @@ subprojects {
     repositories {
         google()
         mavenCentral()
+    }
     plugins.withId("org.jetbrains.kotlin.jvm") {
         apply(plugin = "org.jlleitschuh.gradle.ktlint")
         apply(plugin = "jacoco")
