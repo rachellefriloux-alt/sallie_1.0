@@ -8,11 +8,9 @@
 // Top-level build file for Sallie 1.0
 // Root build: alignment, verification, coverage, formatting – privacy-first (no new network code)
 plugins {
-    kotlin("jvm") version "1.6.10" apply false
-    id("org.jlleitschuh.gradle.ktlint") version "10.2.1" apply false
-    jacoco
-    id("org.jetbrains.kotlin.jvm") version "1.8.20" apply false
+    kotlin("jvm") version "1.8.20" apply false
     id("org.jlleitschuh.gradle.ktlint") version "11.6.1" apply false
+    jacoco
 }
 
 val coverageMin: String = providers.environmentVariable("COVERAGE_MIN")
@@ -27,13 +25,10 @@ val rootCheck = tasks.findByName("check") ?: tasks.register("check") {
     description = "Aggregate Salle verification (all subprojects + persona checks)."
 }
 
-// Apply verification to root project (choose only one implementation)
+// Apply verification to root project
 apply(from = "verification.gradle.kts")
 
 subprojects {
-    repositories {
-        google()
-        mavenCentral()
     plugins.withId("org.jetbrains.kotlin.jvm") {
         apply(plugin = "org.jlleitschuh.gradle.ktlint")
         apply(plugin = "jacoco")
@@ -123,9 +118,6 @@ val generateSalleIcons by tasks.registering(Exec::class) {
     commandLine("python3", "app/icon_pipeline/icon_pipeline.py")
 }
 tasks.matching { it.name == "preBuild" }.configureEach { dependsOn(generateSalleIcons) }
-
-// Apply persona verification
-apply(from = rootProject.file("verification.gradle.kts"))
 
 gradle.projectsEvaluated {
     listOf("verifySalleFeatures", "verifySalleModules").forEach { tName ->

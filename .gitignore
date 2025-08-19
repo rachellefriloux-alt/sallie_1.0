@@ -31,8 +31,12 @@ Thumbs.db
 ### Node / Frontend ###
 node_modules/
 dist/
+dist-ssr/
 pnpm-lock.yaml
 yarn.lock
+coverage/
+.nyc_output
+.cache
 
 ### Generated ###
 app/build/
