@@ -25,15 +25,15 @@ dependencyResolutionManagement {
 rootProject.name = "sallie_1.0"
 
 // Core modules
-include(":app")
+// include(":app")  // Temporarily disabled to fix Kotlin modules first
 include(":ai")
 include(":core")
 include(":feature")
-include(":components")
+// include(":components")  // Temporarily disabled - has Android dependencies
 include(":identity")
 include(":onboarding")
 include(":personaCore")
 include(":responseTemplates")
 include(":tone")
-include(":ui")
+// include(":ui")  // Temporarily disabled - has Android dependencies
 include(":values")

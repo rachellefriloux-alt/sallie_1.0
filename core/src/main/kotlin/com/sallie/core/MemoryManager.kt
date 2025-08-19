@@ -33,7 +33,7 @@ class MemoryManager {
     var pruneTarget: Int = 450
 
     fun remember(key: String, value: String, priority: Int = 50) {
-        val clamped = priority.coerceIn(0,100)
+        val clamped = priority.coerceIn(0, 100)
         val existing = personalContext[key]
         if (existing != null) {
             existing.value = value
@@ -50,7 +50,7 @@ class MemoryManager {
 
     fun boost(key: String, delta: Int = 5) {
         personalContext[key]?.let {
-            it.priority = (it.priority + delta).coerceIn(0,100)
+            it.priority = (it.priority + delta).coerceIn(0, 100)
             it.lastAccess = System.currentTimeMillis()
         }
     }
