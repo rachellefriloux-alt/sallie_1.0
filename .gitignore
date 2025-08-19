@@ -31,10 +31,8 @@ Thumbs.db
 ### Node / Frontend ###
 node_modules/
 dist/
-dist-web/
 pnpm-lock.yaml
 yarn.lock
-coverage/
 
 ### Generated ###
 app/build/
