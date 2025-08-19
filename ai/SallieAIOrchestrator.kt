@@ -1,3 +1,9 @@
+/*
+ * Sallie 1.0 Module
+ * Persona: Tough love meets soul care.
+ * Function: Multi-AI orchestration selecting appropriate pipeline for user requests.
+ * Got it, love.
+ */
 package com.sallie.ai
 
 import kotlinx.coroutines.Dispatchers

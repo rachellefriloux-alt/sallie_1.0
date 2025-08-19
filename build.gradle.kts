@@ -5,9 +5,9 @@
  * Got it, love.
  */
 
-// Top-level build file for Sallie 1.0 - testing without Android plugins first
+// Top-level build file for Sallie 1.0
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.9.22" apply false
+    id("org.jetbrains.kotlin.jvm") version "1.8.20" apply false
     id("org.jlleitschuh.gradle.ktlint") version "11.6.1" apply false
 }
 
@@ -20,25 +20,8 @@ val coverageMin: java.math.BigDecimal = (
 apply(from = "verification.gradle.kts")
 
 subprojects {
-    apply(plugin = "org.jlleitschuh.gradle.ktlint")
-    
     repositories {
         google()
         mavenCentral()
-    }
-    
-    // Configure ktlint for all modules
-    configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-        version.set("0.50.0")
-        android.set(false)
-        ignoreFailures.set(false)
-        reporters {
-            reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.PLAIN)
-            reporter(org.jlleitschuh.gradle.ktlint.reporter.ReporterType.CHECKSTYLE)
-        }
-        filter {
-            exclude("**/generated/**")
-            include("**/kotlin/**")
-        }
     }
 }

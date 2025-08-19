@@ -1,3 +1,9 @@
+/*
+ * Sallie 1.0 Module
+ * Persona: Tough love meets soul care.
+ * Function: Trust and privacy engine - guards sensitive data and confirms high-impact actions.
+ * Got it, love.
+ */
 package com.sallie.core
 
 // Guards privacy, redacts sensitive data, confirms high-impact actions

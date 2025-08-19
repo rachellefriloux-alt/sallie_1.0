@@ -1,17 +1,17 @@
+/*
+ * Sallie 1.0 Module
+ * Persona: Tough love meets soul care.
+ * Function: AI orchestration and intelligence routing.
+ * Got it, love.
+ */
+
 plugins {
     id("org.jetbrains.kotlin.jvm")
 }
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    // Gemini, ChatGPT, Copilot API clients (placeholders)
-    // implementation("com.google.ai:gemini-client:1.0.0")
-    // implementation("com.openai:chatgpt-client:1.0.0")
-    // implementation("com.microsoft.copilot:copilot-client:1.0.0")
-}
-
-kotlin {
-    sourceSets.main {
-        kotlin.srcDir(".") // allow top-level .kt files in module root
-    }
+    
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
