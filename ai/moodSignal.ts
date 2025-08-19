@@ -15,7 +15,12 @@ export type MoodSignal = {
 
 import { analyzeSentiment, extractKeywords } from './nlpEngine';
 
-export function parseMoodSignal(input: string, context: any, persona: string): MoodSignal {
+export interface MoodContext {
+  stressLevel?: number;
+  [key: string]: unknown;
+}
+
+export function parseMoodSignal(input: string, context: MoodContext = {}, persona: string): MoodSignal {
 
   const sentiment = analyzeSentiment(input);
   const keywords = extractKeywords(input);
@@ -23,7 +28,7 @@ export function parseMoodSignal(input: string, context: any, persona: string): M
     let pacing = 'steady';
     let urgency = 'normal';
     let validation = 'gentle';
-    if (sentiment === 'negative' || context.stressLevel > 7) {
+  if (sentiment === 'negative' || (context.stressLevel || 0) > 7) {
       tone = 'sad';
     }
     if (sentiment === 'positive' || persona === 'optimist' || keywords.includes('happy')) {
@@ -41,7 +46,7 @@ export function parseMoodSignal(input: string, context: any, persona: string): M
   return {
     tone,
     pacing,
-    context: context || 'default',
+    context: typeof context === 'string' ? context : 'default',
     persona,
     urgency,
     validation
@@ -53,7 +58,8 @@ export function triggerOverride(signal: MoodSignal, override: string): MoodSigna
 }
 
 export function routeIntent(signal: MoodSignal): string {
-  // Optional enhancement: route based on urgency/persona
+  // Precedence: override > urgency > persona (stability)
+  if (signal.override) return 'fallbackRoute';
   if (signal.urgency === 'high') return 'priorityQueue';
   if (signal.persona === 'Dreamer') return 'creativeFlow';
   return 'defaultRoute';

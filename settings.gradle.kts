@@ -5,7 +5,13 @@
  * Got it, love.
  */
 
+// Explicit settings for Sallie multi-module workspace
 pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
 	repositories {
 		google {
             content {
@@ -20,18 +26,16 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-	repositories {
-		google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
-		mavenCentral()
-	}
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
 }
 
+rootProject.name = "sallie_1.0"
+
+include(":app")
 rootProject.name = "Sallie"
 
 // Core modules (Android app temporarily excluded due to repository access issues)
@@ -39,12 +43,20 @@ rootProject.name = "Sallie"
 include(":ai")
 include(":core")
 include(":feature")
+include(":ai")
 include(":components")
+include(":identity")
+include(":onboarding")
+include(":personaCore")
+include(":responseTemplates")
+include(":tone")
+include(":ui")
+include(":values")
 
-// Additional modules for complete architecture  
+// Additional modules for complete architecture
 include(":ui")
 include(":identity")
-include(":onboarding") 
+include(":onboarding")
 include(":tone")
 include(":personaCore")
 include(":responseTemplates")

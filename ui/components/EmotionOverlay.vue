@@ -1,5 +1,5 @@
 <template>
-  <div class="emotion-overlay" v-if="show">
+  <div v-if="show" class="emotion-overlay">
     <h3>Current Emotional State: {{ emotion }}</h3>
     <p>{{ message }}</p>
   </div>

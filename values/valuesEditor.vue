@@ -1,11 +1,11 @@
 <template>
   <div class="values-editor">
     <h2>Edit Sallie Values</h2>
-    <form>
+    <form @submit.prevent="saveValues">
       <label>Values:
         <textarea v-model="valuesText"></textarea>
       </label>
-      <button type="button" @click="saveValues">Save</button>
+      <button type="submit">Save</button>
     </form>
   </div>
 </template>
@@ -13,6 +13,7 @@
 <script>
 export default {
   name: 'ValuesEditor',
+  emits: ['save'],
   data() {
     return {
       valuesText: [
@@ -26,12 +27,14 @@ export default {
     };
   },
   methods: {
-    saveValues() {
-  // Save values profile to Sallie's repository
-      const saveValues = async () => {
-        await ValuesRepository.save(this.valuesProfile)
-      }
-      saveValues()
+    async saveValues() {
+      const valuesProfile = {
+        text: this.valuesText.trim(),
+        savedAt: new Date().toISOString()
+      };
+      window.valuesProfiles = window.valuesProfiles || [];
+      window.valuesProfiles.push(valuesProfile);
+      this.$emit('save', valuesProfile);
       alert('Values saved!');
     }
   }

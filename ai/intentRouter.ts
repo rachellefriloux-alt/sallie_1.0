@@ -3,9 +3,16 @@
 
 export type IntentRoute = 'priorityQueue' | 'creativeFlow' | 'defaultRoute' | 'fallbackRoute';
 
-export function routeIntent(signal: any): IntentRoute {
+export interface IntentSignal {
+  urgency?: string;
+  persona?: string;
+  override?: boolean;
+}
+
+export function routeIntent(signal: IntentSignal): IntentRoute {
+  // Precedence: override > urgency > persona
+  if (signal.override) return 'fallbackRoute';
   if (signal.urgency === 'high') return 'priorityQueue';
   if (signal.persona === 'Dreamer') return 'creativeFlow';
-  if (signal.override) return 'fallbackRoute';
   return 'defaultRoute';
 }

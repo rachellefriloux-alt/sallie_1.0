@@ -1,17 +1,17 @@
 <template>
   <div class="identity-editor">
     <h2>Edit Sallie Identity</h2>
-    <form>
-      <label>Name: <input type="text" v-model="identity.name" /></label>
-      <label>Role: <input type="text" v-model="identity.role" /></label>
-      <label>Created For: <input type="text" v-model="identity.createdFor" /></label>
-      <label>Version: <input type="text" v-model="identity.version" /></label>
-      <label>Core Function: <input type="text" v-model="identity.coreFunction" /></label>
-      <label>Ultimate Goal: <input type="text" v-model="identity.ultimateGoal" /></label>
+    <form @submit.prevent="saveIdentity">
+      <label>Name: <input v-model="identity.name" type="text" /></label>
+      <label>Role: <input v-model="identity.role" type="text" /></label>
+      <label>Created For: <input v-model="identity.createdFor" type="text" /></label>
+      <label>Version: <input v-model="identity.version" type="text" /></label>
+      <label>Core Function: <input v-model="identity.coreFunction" type="text" /></label>
+      <label>Ultimate Goal: <input v-model="identity.ultimateGoal" type="text" /></label>
       <label>Principles:
         <textarea v-model="principlesText"></textarea>
       </label>
-      <button type="button" @click="saveIdentity">Save</button>
+      <button type="submit">Save</button>
     </form>
   </div>
 </template>
@@ -19,6 +19,7 @@
 <script>
 export default {
   name: 'IdentityEditor',
+  emits: ['save'],
   data() {
     return {
       identity: {
@@ -46,6 +47,15 @@ export default {
   methods: {
     saveIdentity() {
   // Save logic for identity profile
+      const personaProfile = {
+        id: crypto?.randomUUID?.() || Math.random().toString(36).slice(2),
+        persona_name: this.identity.name,
+        tone: this.identity.role,
+        style_config: JSON.stringify({ principles: this.principlesText.split('\n').map(p => p.trim()).filter(Boolean) }),
+        last_updated: new Date().toISOString()
+      };
+      window.identityLedger = (window.identityLedger || '') + `${new Date().toISOString()} | Saved persona: ${personaProfile.persona_name}\n`;
+      this.$emit('save', personaProfile);
       alert('Identity saved!');
     }
   }

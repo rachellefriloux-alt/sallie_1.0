@@ -1,11 +1,11 @@
 <template>
   <div class="tone-editor">
     <h2>Edit Sallie Tone</h2>
-    <form>
+    <form @submit.prevent="saveTone">
       <label>Tone:
         <textarea v-model="toneText"></textarea>
       </label>
-      <button type="button" @click="saveTone">Save</button>
+      <button type="submit">Save</button>
     </form>
   </div>
 </template>
@@ -13,6 +13,7 @@
 <script>
 export default {
   name: 'ToneEditor',
+  emits: ['save'],
   data() {
     return {
       toneText: [
@@ -26,9 +27,14 @@ export default {
     };
   },
   methods: {
-    saveTone() {
-  // Save tone profile to Sallie's repository
-  await ToneRepository.save(this.toneProfile)
+    async saveTone() {
+      const toneProfile = {
+        text: this.toneText.trim(),
+        savedAt: new Date().toISOString()
+      };
+      window.toneProfiles = window.toneProfiles || [];
+      window.toneProfiles.push(toneProfile);
+      this.$emit('save', toneProfile);
       alert('Tone saved!');
     }
   }
