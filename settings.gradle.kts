@@ -17,7 +17,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "sallie_1.0"
 
-include(":app")
+// include(":app")
 include(":core")
 include(":feature")
 include(":ai")

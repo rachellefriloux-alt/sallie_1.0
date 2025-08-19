@@ -1,24 +1,20 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
+    kotlin("jvm")
+    application
 }
 
-android {
-    namespace = "com.sallie.core"
-    compileSdk = 34
-    defaultConfig { 
-        minSdk = 26
-        targetSdk = 34
-    }
-    compileOptions { 
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions { jvmTarget = "17" }
-    buildFeatures { compose = false }
+application {
+    mainClass.set("com.sallie.launcher.SallieDemoKt")
 }
 
 dependencies {
+    implementation(project(":personaCore"))
+    implementation(project(":tone"))
+    implementation(project(":values"))
+    implementation(project(":responseTemplates"))
+    implementation(project(":identity"))
+    implementation(project(":onboarding"))
+    
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.10")
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.8.10")
 }

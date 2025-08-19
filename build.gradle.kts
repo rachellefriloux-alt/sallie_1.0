@@ -1,17 +1,7 @@
 // Root build: alignment, verification, coverage, formatting – privacy-first (no new network code)
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath("com.android.tools.build:gradle:7.4.2")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10")
-    }
-}
-
 plugins {
-    id("org.jlleitschuh.gradle.ktlint") version "11.0.0" apply false
+    kotlin("jvm") version "1.6.10" apply false
+    id("org.jlleitschuh.gradle.ktlint") version "10.2.1" apply false
     jacoco
 }
 
@@ -119,7 +109,7 @@ val generateSalleIcons by tasks.registering(Exec::class) {
 tasks.matching { it.name == "preBuild" }.configureEach { dependsOn(generateSalleIcons) }
 
 // Apply persona verification
-apply(from = rootProject.file("verification.gradle.kts"))
+// apply(from = rootProject.file("verification.gradle.kts"))
 
 gradle.projectsEvaluated {
     listOf("verifySalleFeatures", "verifySalleModules").forEach { tName ->

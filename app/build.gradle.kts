@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace = "com.sallie.launcher"
-    compileSdk = 34
+    compileSdk = 31
 
     defaultConfig {
         applicationId = "com.sallie.launcher"
-        minSdk = 26
-        targetSdk = 34
+        minSdk = 21
+        targetSdk = 31
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -28,13 +28,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions { jvmTarget = "17" }
+    kotlinOptions { jvmTarget = "11" }
 
     buildFeatures { compose = true }
-    composeOptions { kotlinCompilerExtensionVersion = "1.4.3" }
+    composeOptions { kotlinCompilerExtensionVersion = "1.1.1" }
 
     packagingOptions {
         resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
@@ -43,8 +43,8 @@ android {
 
 dependencies {
     // Compose BOM for version alignment
-    implementation(platform("androidx.compose:compose-bom:2023.03.00"))
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))
+    implementation(platform("androidx.compose:compose-bom:2022.10.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2022.10.00"))
 
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.activity:activity-compose:1.9.2")
@@ -73,7 +73,7 @@ dependencies {
 
     // Tests
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.8.10")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.10")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 }
