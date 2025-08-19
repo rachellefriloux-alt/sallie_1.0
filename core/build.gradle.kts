@@ -7,8 +7,10 @@
 
 plugins {
     kotlin("jvm")
+    // Removed application plugin to avoid main class issues
 }
 
+dependencies {
 dependencies {
     implementation(project(":personaCore"))
     implementation(project(":tone"))
@@ -16,7 +18,7 @@ dependencies {
     implementation(project(":responseTemplates"))
     implementation(project(":identity"))
     implementation(project(":onboarding"))
-    
+
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     testImplementation("junit:junit:4.13.2")
