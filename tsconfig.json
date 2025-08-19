@@ -5,6 +5,7 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "types": ["vitest/globals"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -18,7 +19,6 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
@@ -29,7 +29,6 @@
       "@/ui/*": ["./ui/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",

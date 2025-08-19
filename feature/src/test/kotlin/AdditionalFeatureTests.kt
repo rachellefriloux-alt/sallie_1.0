@@ -30,9 +30,9 @@ class AdditionalFeatureTests {
         dp.enforceProtocol("redact-sensitive", "User requested redaction")
         dp.logDecision("session-start")
         val audit = dp.audit()
-        assertTrue(audit.any { it.startsWith("redact-sensitive") })
-        assertTrue(audit.any { it == "session-start" })
-        assertTrue(dp.offerRollback("redact-sensitive").startsWith("rollback-available"))
+        assertTrue(audit.any { it.action == "redact-sensitive" })
+        assertTrue(audit.any { it.action == "session-start" })
+        assertTrue(dp.offerRollback("redact-sensitive").startsWith("Rollback available"))
     }
 
     @Test
