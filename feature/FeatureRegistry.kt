@@ -1,3 +1,9 @@
+/*
+ * Sallie 1.0 Module
+ * Persona: Tough love meets soul care.
+ * Function: Central lightweight registry for instantiated feature modules and system access.
+ * Got it, love.
+ */
 package com.sallie.feature
 
 // Central lightweight registry for instantiated feature modules

@@ -34,14 +34,14 @@ dependencyResolutionManagement {
 
 rootProject.name = "Sallie"
 
-// Core modules (JVM only for now)
-// include(":app")  # temporarily disabled until Android plugins work
+// Core modules (Android app temporarily excluded due to repository access issues)
+// include(":app")
 include(":ai")
 include(":core")
 include(":feature")
 include(":components")
 
-// Additional modules for complete architecture
+// Additional modules for complete architecture  
 include(":ui")
 include(":identity")
 include(":onboarding") 

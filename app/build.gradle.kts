@@ -1,27 +1,63 @@
+/*
+ * Sallie 1.0 Module
+ * Persona: Tough love meets soul care.
+ * Function: Main Android launcher application.
+ * Got it, love.
+ */
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.sallie.launcher"
-    // Updated to latest SDK to satisfy OldTargetApi lint and ensure forward compatibility
-    compileSdk = 35
+    // Compatible with AGP 7.4.2
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.sallie.launcher"
-        compileSdk = 35
-    targetSdk = 35
+        minSdk = 26
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+        
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+    }
+    
+    // Product flavors for local-only vs cloud functionality
+    flavorDimensions += "connectivity"
+    productFlavors {
+        create("localOnly") {
+            dimension = "connectivity"
+            applicationIdSuffix = ".local"
+            versionNameSuffix = "-local"
+            resValue("string", "app_name", "Sallie Local")
+        }
+        create("cloud") {
+            dimension = "connectivity" 
+            applicationIdSuffix = ".cloud"
+            versionNameSuffix = "-cloud"
+            resValue("string", "app_name", "Sallie Cloud")
+        }
     }
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.11"
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -30,63 +66,49 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-
-    flavorDimensions("persona")
-    productFlavors {
-        create("creator") {
-            dimension = "persona"
-            resValue("string", "persona_mode", "creator")
-        }
-        create("mom") {
-            dimension = "persona"
-            resValue("string", "persona_mode", "mom")
-        }
-    }
 }
 
 dependencies {
-        lint {
-            baseline = file("lint-baseline.xml")
-            abortOnError = true
-            ignoreTestSources = true
-            explainIssues = true
-        }
     implementation(project(":ai"))
     implementation(project(":core"))
     implementation(project(":feature"))
     implementation(project(":components"))
-    implementation(platform("androidx.compose:compose-bom:2024.02.00"))
-    implementation("androidx.core:core-ktx:1.17.0")
+    implementation(project(":ui"))
+    implementation(project(":identity"))
+    implementation(project(":onboarding"))
+    implementation(project(":tone"))
+    implementation(project(":personaCore"))
+    
+    // Compose BOM
+    implementation(platform("androidx.compose:compose-bom:2023.10.01"))
     implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.2")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.9.2")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.2")
-    implementation("androidx.fragment:fragment-ktx:1.8.9")
-    implementation("androidx.activity:activity-compose:1.10.1")
-    implementation("com.google.firebase:firebase-firestore-ktx:25.1.4")
-    implementation("com.google.firebase:firebase-auth-ktx:23.2.1")
+    implementation("androidx.compose.material3:material3")
+    
+    // Android core
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+    
+    // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("androidx.work:work-runtime-ktx:2.10.3")
-}
-
-// Apply the Google services plugin to process app/google-services.json
-// apply(plugin = "com.google.gms.google-services")
-
-tasks.register("generateSallieIcons") {
-    description = "Generate all persona × season × mood launcher icons"
-    group = "build setup"
-
-    doLast {
-        println("💎 Generating SallieOS icon set…")
-        exec {
-            workingDir = file("$projectDir/icon_pipeline")
-            commandLine("python3", "generate_icons.py")
-        }
-    }
-}
-
-tasks.named("preBuild") {
-    dependsOn("generateSallieIcons")
+    
+    // WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+    
+    // Cloud flavor specific dependencies  
+    "cloudImplementation"("com.google.firebase:firebase-firestore-ktx:24.10.0")
+    "cloudImplementation"("com.google.firebase:firebase-auth-ktx:22.3.1")
+    
+    // Testing
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation(platform("androidx.compose:compose-bom:2023.10.01"))
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
