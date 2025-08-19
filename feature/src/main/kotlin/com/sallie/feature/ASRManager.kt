@@ -21,7 +21,7 @@ class ASRManager {
         if (isFinal) {
             finalText = text
             transcriptHistory.add(text)
-        multiFinal.add(text)
+            multiFinal.add(text)
             partial = ""
         } else {
             partial = text

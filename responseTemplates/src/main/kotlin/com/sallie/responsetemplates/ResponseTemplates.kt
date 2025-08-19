@@ -4,7 +4,7 @@
  * Function: Response templates and conversation patterns for consistent communication.
  * Got it, love.
  */
-package com.sallie.responseTemplates
+package com.sallie.responsetemplates
 
 /**
  * Collection of pre-crafted response templates that embody Sallie's persona.

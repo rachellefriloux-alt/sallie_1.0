@@ -1,7 +1,5 @@
 package com.sallie.feature
 
-import kotlin.random.Random
-
 // Provides current synthetic device state (non-placeholder: generated composite state)
 object DeviceAPI {
     private val batteryLevels = listOf("high", "medium", "low")
