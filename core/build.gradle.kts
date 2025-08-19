@@ -11,16 +11,12 @@ plugins {
 }
 
 dependencies {
-dependencies {
     implementation(project(":personaCore"))
     implementation(project(":tone"))
     implementation(project(":values"))
     implementation(project(":responseTemplates"))
     implementation(project(":identity"))
     implementation(project(":onboarding"))
-
-
-dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
