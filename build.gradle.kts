@@ -25,14 +25,10 @@ val rootCheck = tasks.findByName("check") ?: tasks.register("check") {
     description = "Aggregate Salle verification (all subprojects + persona checks)."
 }
 
-// Apply verification to root project (choose only one implementation)
+// Apply verification to root project
 apply(from = "verification.gradle.kts")
 
 subprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
     plugins.withId("org.jetbrains.kotlin.jvm") {
         apply(plugin = "org.jlleitschuh.gradle.ktlint")
         apply(plugin = "jacoco")
@@ -122,9 +118,6 @@ val generateSalleIcons by tasks.registering(Exec::class) {
     commandLine("python3", "app/icon_pipeline/icon_pipeline.py")
 }
 tasks.matching { it.name == "preBuild" }.configureEach { dependsOn(generateSalleIcons) }
-
-// Apply persona verification
-apply(from = rootProject.file("verification.gradle.kts"))
 
 gradle.projectsEvaluated {
     listOf("verifySalleFeatures", "verifySalleModules").forEach { tName ->

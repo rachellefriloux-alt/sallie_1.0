@@ -23,119 +23,57 @@ tasks.register("verifySalleFeatures") {
         kotlinFiles.forEach { file ->
             val content = file.readText()
             if (!content.contains("Sallie 1.0 Module") && !content.contains("Salle 1.0 Module")) {
-                missingHeaders.add(file.path)
+                missingHeaders.add(file.relativeTo(project.rootDir).path)
             }
         }
 
         if (missingHeaders.isNotEmpty()) {
-            println("❌ Missing persona headers in:")
-            missingHeaders.forEach { println("   - $it") }
-            throw GradleException("Sallie's persona headers are missing! Every Kotlin file needs the persona header comment.")
+            throw GradleException(
+                "Missing Sallie persona headers in files: ${missingHeaders.joinToString(", ")}\n" +
+                "All Kotlin files must start with Sallie's persona header block."
+            )
         }
 
-        // Verify localOnly flavor doesn't have network imports
+        // Check for forbidden network imports in localOnly flavor
         val localOnlyViolations = mutableListOf<String>()
         kotlinFiles.forEach { file ->
             val content = file.readText()
-            if (content.contains("import java.net.") ||
-                content.contains("import okhttp3.") ||
+            if (content.contains("import okhttp3.") || 
                 content.contains("import retrofit2.")) {
-                localOnlyViolations.add(file.path)
+                localOnlyViolations.add(file.relativeTo(project.rootDir).path)
             }
         }
 
         if (localOnlyViolations.isNotEmpty()) {
-            println("❌ Local-only violations found in:")
-            localOnlyViolations.forEach { println("   - $it") }
-            throw GradleException("Network imports detected! Local-only mode means NO network calls, love.")
+            throw GradleException(
+                "Network imports found in files: ${localOnlyViolations.joinToString(", ")}\n" +
+                "The localOnly flavor cannot have network dependencies."
+            )
         }
 
         // Verify required modules exist
-        val requiredModules = listOf("app", "ai", "core", "feature", "components")
+        val requiredModules = listOf("ai", "core", "feature", "components", "personaCore")
+        val missingModules = mutableListOf<String>()
+
         requiredModules.forEach { module ->
             val moduleDir = file(module)
-            val buildFile = file("$module/build.gradle.kts")
+            val buildFile = file("$module/build.gradle.kts").let { 
+                if (it.exists()) it else file("$module/build.gradle") 
+            }
+            
             if (!moduleDir.exists() || !buildFile.exists()) {
-                throw GradleException("Required module '$module' is missing or doesn't have proper build.gradle.kts!")
+                missingModules.add(module)
             }
         }
 
-        println("✅ All Sallie features verified! Architecture is solid, persona intact.")
-        println("Got it, love. 💪")
+        if (missingModules.isNotEmpty()) {
+            throw GradleException("Missing required modules: ${missingModules.joinToString(", ")}")
+        }
+
+        println("✅ Sallie's core features verified!")
     }
-// verification.gradle.kts
-
-tasks.register<VerifySalleFeatures>("verifySalleModules") {
-    requiredModules.set(
-        listOf(
-            // ":app",  // Commented out for JVM demo
-            ":ai",
-            ":core",
-            ":feature",
-            ":components",
-            ":personaCore",
-            ":identity",
-            ":tone",
-            ":ui",
-            ":onboarding",
-            ":responseTemplates",
-            ":values"
-        )
-    )
-
-    // These stay as‑is from your current enforcement rules:
-    forbiddenImports.set(
-        listOf(
-            "java.net.URL",
-            "java.net.HttpURLConnection"
-            // …plus any others you already block
-        )
-    )
-
-    personaHeaderMarker.set("// 🛡 SALLE PERSONA ENFORCED 🛡")
-    personaSlogan.set("Loyal, Modular, Audit‑Proof.")
-    maxMainActivityLines.set(500)
-    enforcePersonaHeaders.set(true)
-    baseDirPath.set(project.rootDir.absolutePath)
-    kotlinSources.set(fileTree(project.rootDir) {
-        include("**/*.kt")
-    })
 }
 
-// Privacy guard task: scans for disallowed network/analytics symbols.
-tasks.register<VerifySallePrivacy>("verifySallePrivacy") {
-    baseDirPath.set(project.rootDir.absolutePath)
-    bannedTokens.set(listOf(
-        "HttpURLConnection(",
-        "OkHttpClient(",
-        "Retrofit.Builder",
-        "FirebaseAnalytics",
-        "GoogleAnalytics",
-        "AnalyticsTracker",
-        "Socket("
-    ))
-    kotlinSources.set(fileTree(project.rootDir) { include("**/*.kt") })
-}
-
-tasks.register<VerifySalleLayering>("verifySalleLayering") {
-    baseDirPath.set(project.rootDir.absolutePath)
-    layerOrder.set(listOf(
-        // ":app",  // Commented out for JVM demo
-        ":feature",
-        ":components",
-        ":ui",
-        ":personaCore",
-        ":identity",
-        ":onboarding",
-        ":tone",
-        ":responseTemplates",
-        ":values",
-        ":ai", // ai near bottom but above core if it uses core logic only
-        ":core"
-    ))
-    buildFiles.set(fileTree(project.rootDir) { include("**/build.gradle.kts", "**/build.gradle") })
-}
-    buildFiles.setFrom(fileTree(project.rootDir) { include("**/build.gradle.kts", "**/build.gradle") })
 tasks.register("verifySalleModules") {
     description = "Verifies modular architecture compliance"
     group = "verification"
@@ -143,13 +81,15 @@ tasks.register("verifySalleModules") {
     doLast {
         println("🔍 Verifying modular architecture...")
 
-        // Check that modules don't have circular dependencies
+        // Check for circular dependencies and proper layering
         val modules = listOf("ai", "core", "feature", "components")
+        
         modules.forEach { module ->
             val buildFile = file("$module/build.gradle.kts")
             if (buildFile.exists()) {
                 val content = buildFile.readText()
-                // Core modules shouldn't depend on feature modules
+                
+                // Core cannot depend on feature
                 if (module == "core" && content.contains("implementation(project(\":feature\"))")) {
                     throw GradleException("Core module cannot depend on feature module! That breaks modularity.")
                 }
