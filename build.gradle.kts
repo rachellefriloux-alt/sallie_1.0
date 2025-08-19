@@ -109,7 +109,7 @@ val generateSalleIcons by tasks.registering(Exec::class) {
 tasks.matching { it.name == "preBuild" }.configureEach { dependsOn(generateSalleIcons) }
 
 // Apply persona verification
-// apply(from = rootProject.file("verification.gradle.kts"))
+apply(from = rootProject.file("verification.gradle.kts"))
 
 gradle.projectsEvaluated {
     listOf("verifySalleFeatures", "verifySalleModules").forEach { tName ->
