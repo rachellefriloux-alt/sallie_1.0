@@ -7,20 +7,10 @@
 
 plugins {
     kotlin("jvm")
-    application
-}
-
-application {
-    mainClass.set("com.sallie.launcher.SallieDemoKt")
+    // Removed application plugin to avoid main class issues
 }
 
 dependencies {
-    implementation(project(":personaCore"))
-    implementation(project(":tone"))
-    implementation(project(":values"))
-    implementation(project(":responseTemplates"))
-    implementation(project(":identity"))
-    implementation(project(":onboarding"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     testImplementation("junit:junit:4.13.2")
