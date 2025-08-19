@@ -8,12 +8,8 @@
 // Top-level build file for Sallie 1.0
 // Root build: alignment, verification, coverage, formatting – privacy-first (no new network code)
 plugins {
-    id("com.android.application") version "8.12.0" apply false
-    id("com.android.library") version "8.12.0" apply false
-    id("org.jetbrains.kotlin.android") version "2.2.10" apply false
-    id("org.jetbrains.kotlin.jvm") version "2.2.10" apply false
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.10" apply false
-    id("org.jlleitschuh.gradle.ktlint") version "13.0.0" apply false
+    kotlin("jvm") version "1.6.10" apply false
+    id("org.jlleitschuh.gradle.ktlint") version "10.2.1" apply false
     jacoco
     id("org.jetbrains.kotlin.jvm") version "1.8.20" apply false
     id("org.jlleitschuh.gradle.ktlint") version "11.6.1" apply false

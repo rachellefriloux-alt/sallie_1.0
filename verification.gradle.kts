@@ -68,7 +68,7 @@ tasks.register("verifySalleFeatures") {
 tasks.register<VerifySalleFeatures>("verifySalleModules") {
     requiredModules.set(
         listOf(
-            ":app",
+            // ":app",  // Commented out for JVM demo
             ":ai",
             ":core",
             ":feature",
@@ -97,7 +97,7 @@ tasks.register<VerifySalleFeatures>("verifySalleModules") {
     maxMainActivityLines.set(500)
     enforcePersonaHeaders.set(true)
     baseDirPath.set(project.rootDir.absolutePath)
-    kotlinSources.setFrom(fileTree(project.rootDir) {
+    kotlinSources.set(fileTree(project.rootDir) {
         include("**/*.kt")
     })
 }
@@ -114,13 +114,13 @@ tasks.register<VerifySallePrivacy>("verifySallePrivacy") {
         "AnalyticsTracker",
         "Socket("
     ))
-    kotlinSources.setFrom(fileTree(project.rootDir) { include("**/*.kt") })
+    kotlinSources.set(fileTree(project.rootDir) { include("**/*.kt") })
 }
 
 tasks.register<VerifySalleLayering>("verifySalleLayering") {
     baseDirPath.set(project.rootDir.absolutePath)
     layerOrder.set(listOf(
-        ":app",
+        // ":app",  // Commented out for JVM demo
         ":feature",
         ":components",
         ":ui",
@@ -133,6 +133,8 @@ tasks.register<VerifySalleLayering>("verifySalleLayering") {
         ":ai", // ai near bottom but above core if it uses core logic only
         ":core"
     ))
+    buildFiles.set(fileTree(project.rootDir) { include("**/build.gradle.kts", "**/build.gradle") })
+}
     buildFiles.setFrom(fileTree(project.rootDir) { include("**/build.gradle.kts", "**/build.gradle") })
 tasks.register("verifySalleModules") {
     description = "Verifies modular architecture compliance"

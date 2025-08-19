@@ -6,10 +6,13 @@
  */
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    kotlin("jvm")
 }
 
+dependencies {
+    implementation(project(":core"))
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.10")
+    testImplementation("junit:junit:4.13.2")
 android {
     namespace = "com.sallie.components"
     compileSdk = 34
@@ -23,5 +26,3 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
-
-dependencies { implementation(project(":core")) }

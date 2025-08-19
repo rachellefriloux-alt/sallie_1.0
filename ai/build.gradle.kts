@@ -6,10 +6,13 @@
  */
 
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    kotlin("jvm")
 }
 
+dependencies {
+    implementation(project(":core"))
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.10")
+    testImplementation("junit:junit:4.13.2")
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
@@ -23,5 +26,3 @@ android {
     kotlinOptions { jvmTarget = "17" }
     buildFeatures { compose = false; buildConfig = true }
 }
-
-dependencies { implementation(project(":core")) }
