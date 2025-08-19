@@ -5,7 +5,7 @@
  * Got it, love.
  */
 
-import { emotionToPersonality, getEmotionState, type EmotionState } from '../ai/utils/emotionMap';
+import { type EmotionState } from '../ai/utils/emotionMap';
 
 interface PersonaState {
   mode: 'tough_love' | 'soul_care' | 'wise_sister' | 'balanced';
@@ -27,7 +27,6 @@ interface UserContext {
 class AdaptivePersonaEngine {
   private currentPersona: PersonaState;
   private adaptationHistory: PersonaState[] = [];
-  private contextAnalyzer: ContextAnalyzer;
 
   constructor() {
     this.currentPersona = {
@@ -37,7 +36,7 @@ class AdaptivePersonaEngine {
       context: 'Initial balanced state',
       lastUpdate: new Date()
     };
-    this.contextAnalyzer = new ContextAnalyzer();
+    // Context analyzer available when needed
   }
 
   adapt(emotion: EmotionState, userContext: UserContext): PersonaState {
@@ -185,81 +184,6 @@ class AdaptivePersonaEngine {
       lastUpdate: new Date()
     };
     this.adaptationHistory = [];
-  }
-}
-
-class ContextAnalyzer {
-  analyzeUserContext(recentMessages: string[], currentTasks: string[]): UserContext {
-    return {
-      stressLevel: this.calculateStressLevel(recentMessages),
-      taskComplexity: this.calculateTaskComplexity(currentTasks),
-      timeOfDay: this.getTimeOfDay(),
-      recentInteractions: recentMessages.slice(-5),
-      currentGoals: currentTasks,
-      mood: this.inferMood(recentMessages)
-    };
-  }
-
-  private calculateStressLevel(messages: string[]): number {
-    const stressKeywords = ['urgent', 'stressed', 'overwhelmed', 'panic', 'crisis', 'emergency', 'deadline'];
-    const relaxationKeywords = ['calm', 'peaceful', 'relaxed', 'easy', 'simple', 'comfortable'];
-
-    let stressScore = 0;
-    const recentMessages = messages.slice(-3).join(' ').toLowerCase();
-
-    stressKeywords.forEach(keyword => {
-      if (recentMessages.includes(keyword)) stressScore += 20;
-    });
-
-    relaxationKeywords.forEach(keyword => {
-      if (recentMessages.includes(keyword)) stressScore -= 15;
-    });
-
-    return Math.max(0, Math.min(100, stressScore + 30)); // Base stress level of 30
-  }
-
-  private calculateTaskComplexity(tasks: string[]): number {
-    const complexityKeywords = ['analyze', 'complex', 'difficult', 'challenging', 'intricate', 'detailed'];
-    const simpleKeywords = ['simple', 'easy', 'basic', 'quick', 'straightforward'];
-
-    let complexity = 30; // Base complexity
-    const taskText = tasks.join(' ').toLowerCase();
-
-    complexityKeywords.forEach(keyword => {
-      if (taskText.includes(keyword)) complexity += 15;
-    });
-
-    simpleKeywords.forEach(keyword => {
-      if (taskText.includes(keyword)) complexity -= 10;
-    });
-
-    return Math.max(0, Math.min(100, complexity));
-  }
-
-  private getTimeOfDay(): string {
-    const hour = new Date().getHours();
-    if (hour >= 5 && hour < 12) return 'morning';
-    if (hour >= 12 && hour < 17) return 'afternoon';
-    if (hour >= 17 && hour < 21) return 'evening';
-    return 'night';
-  }
-
-  private inferMood(messages: string[]): string {
-    const moodKeywords = {
-      positive: ['happy', 'excited', 'great', 'awesome', 'wonderful', 'fantastic'],
-      negative: ['sad', 'frustrated', 'angry', 'disappointed', 'worried', 'stressed'],
-      neutral: ['okay', 'fine', 'normal', 'regular', 'typical', 'usual']
-    };
-
-    const recentText = messages.slice(-2).join(' ').toLowerCase();
-    
-    for (const [mood, keywords] of Object.entries(moodKeywords)) {
-      if (keywords.some(keyword => recentText.includes(keyword))) {
-        return mood;
-      }
-    }
-
-    return 'neutral';
   }
 }
 

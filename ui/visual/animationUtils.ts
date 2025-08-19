@@ -28,7 +28,7 @@ export function generateKeyframes(name: string, keyframes: Record<string, Record
   return `@keyframes ${name} {\n${keyframeRules}\n}`;
 }
 
-export function generateFadeInAnimation(duration: string = '0.6s', delay: string = '0s'): string {
+export function generateFadeInAnimation(_duration: string = '0.6s', _delay: string = '0s'): string {
   return generateKeyframes('sallie-fade-in', {
     '0%': { opacity: '0', transform: 'translateY(10px)' },
     '100%': { opacity: '1', transform: 'translateY(0)' }

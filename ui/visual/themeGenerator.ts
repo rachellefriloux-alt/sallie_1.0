@@ -19,7 +19,7 @@ interface ThemeColors {
   error: string;
 }
 
-interface GradientTheme extends ThemeColors {
+export interface GradientTheme extends ThemeColors {
   gradient: string;
   cardGradient: string;
   shadowColor: string;

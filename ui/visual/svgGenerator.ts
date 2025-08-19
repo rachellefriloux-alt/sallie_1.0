@@ -24,7 +24,7 @@ export function generateAvatarSVG(seed: number = 42, primaryColor: string = '#8b
   
   // Generate deterministic patterns based on seed
   const rng = createSeededRandom(seed);
-  const faceType = Math.floor(rng() * 3);
+  // const _faceType = Math.floor(rng() * 3); // Face type for future use
   const eyeType = Math.floor(rng() * 2);
   
   let svg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">

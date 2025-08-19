@@ -80,7 +80,7 @@ export function sanitizeSvg(svgString: string): string {
       const attrMatches = attributes.match(/[\w-]+\s*=\s*["'][^"']*["']/g);
       if (attrMatches) {
         filteredAttributes = attrMatches
-          .filter(attr => {
+          .filter((attr: any) => {
             const attrName = attr.split('=')[0].trim().toLowerCase();
             return ALLOWED_ATTRIBUTES.has(attrName);
           })

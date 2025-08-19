@@ -80,7 +80,7 @@ class ResearchService {
       const errorResult: ResearchResult = {
         goal,
         success: false,
-        result: `I ran into an issue: ${error.message}. Let me try a different approach.`,
+        result: `I ran into an issue: ${(error as Error).message || error}. Let me try a different approach.`,
         confidence: 0.1,
         reasoning: 'Processing failed due to system error',
         alternatives: [],
