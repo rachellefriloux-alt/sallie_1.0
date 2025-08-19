@@ -25,7 +25,7 @@ dependencyResolutionManagement {
 rootProject.name = "sallie_1.0"
 
 // Core modules
-include(":app")
+// include(":app")  // Temporarily disabled to fix Kotlin modules first
 include(":ai")
 include(":core")
 include(":feature")

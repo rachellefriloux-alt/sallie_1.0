@@ -9,7 +9,7 @@ data class ThemeColors(
     val background: Color,
     val surface: Color,
     val onPrimary: Color,
-    val onSecondary: Color,
+    val onSecondary: Color
     // Add other colors like error, onBackground, onSurface etc. if needed
 )
 
