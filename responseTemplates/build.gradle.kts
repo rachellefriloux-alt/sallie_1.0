@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.sallie.core"
+    namespace = "com.sallie.responsetemplates"
     compileSdk = 34
     defaultConfig { 
         minSdk = 26
@@ -19,6 +19,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core"))
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.8.10")
 }
