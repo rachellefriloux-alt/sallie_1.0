@@ -12,18 +12,14 @@ plugins {
 
 android {
     namespace = "com.sallie.launcher"
-    compileSdk = 31
-    // Compatible with AGP 7.4.2
     compileSdk = 34
 
     defaultConfig {
         applicationId = "com.sallie.launcher"
-        minSdk = 21
-        targetSdk = 31
+        minSdk = 26
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -35,6 +31,7 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug { }
     }
 
     // Product flavors for local-only vs cloud functionality
@@ -54,40 +51,26 @@ android {
         }
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-        debug { }
     buildFeatures {
         compose = true
         buildConfig = true
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions { jvmTarget = "11" }
-
-    buildFeatures { compose = true }
-    composeOptions { kotlinCompilerExtensionVersion = "1.1.1" }
-
-    packagingOptions {
-        resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.8"
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
+    }
+
+    packaging {
+        resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
     }
 }
 
