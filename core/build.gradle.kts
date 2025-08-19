@@ -11,11 +11,14 @@ plugins {
 }
 
 dependencies {
+sallie-1.0
     implementation(project(":personaCore"))
     implementation(project(":tone"))
     implementation(project(":values"))
     implementation(project(":responseTemplates"))
 
+
+ main
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
