@@ -1,4 +1,5 @@
 {
     "github.copilot.nextEditSuggestions.enabled": true,
-    "gradle.javaDebug.cleanOutput": true
+    "gradle.javaDebug.cleanOutput": true,
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

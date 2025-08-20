@@ -6,25 +6,32 @@
  */
 
 plugins {
-    kotlin("jvm")
+    kotlin("jvm") version "1.9.23"
     // Removed application plugin to avoid main class issues
 }
 
 dependencies {
-sallie-1.0
     implementation(project(":personaCore"))
     implementation(project(":tone"))
     implementation(project(":values"))
     implementation(project(":responseTemplates"))
-
-
- main
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("junit:junit:4.13.2")
 }
 
-kotlin {
-    jvmToolchain(17)
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
+sourceSets {
+    main {
+        java.srcDirs("src/main/kotlin")
+    }
+    test {
+        java.srcDirs("src/test/kotlin")
+    }
 }
