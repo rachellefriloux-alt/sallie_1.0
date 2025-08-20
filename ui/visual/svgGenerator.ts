@@ -16,43 +16,66 @@ interface SVGOptions {
 }
 
 export function generateAvatarSVG(seed: number = 42, primaryColor: string = '#8b5cf6'): string {
+  // Enhanced to work with new avatar system
   const colors = [
     primaryColor,
     adjustColorBrightness(primaryColor, 20),
-    adjustColorBrightness(primaryColor, -20)
+    adjustColorBrightness(primaryColor, -20),
+    adjustColorBrightness(primaryColor, 40),
+    adjustColorBrightness(primaryColor, -40)
   ];
   
   // Generate deterministic patterns based on seed
   const rng = createSeededRandom(seed);
-  // const _faceType = Math.floor(rng() * 3); // Face type for future use
-  const eyeType = Math.floor(rng() * 2);
+  const eyeType = Math.floor(rng() * 3); // Expanded eye types
+  const hairType = Math.floor(rng() * 4); // Added hair variations
+  const faceVariation = rng() > 0.5;
   
   let svg = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <radialGradient id="faceGrad" cx="50%" cy="40%">
         <stop offset="0%" stop-color="${colors[0]}" />
-        <stop offset="100%" stop-color="${colors[1]}" />
+        <stop offset="70%" stop-color="${colors[1]}" />
+        <stop offset="100%" stop-color="${colors[2]}" />
       </radialGradient>
-      <filter id="glow">
+      <linearGradient id="hairGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${colors[3]}" />
+        <stop offset="100%" stop-color="${colors[4]}" />
+      </linearGradient>
+      <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
         <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
         <feMerge> 
           <feMergeNode in="coloredBlur"/>
           <feMergeNode in="SourceGraphic"/>
         </feMerge>
       </filter>
+      <filter id="softShadow">
+        <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.3"/>
+      </filter>
     </defs>
     
+    <!-- Hair background -->
+    ${generateSimpleHair(hairType, colors)}
+    
     <!-- Face -->
-    <circle cx="50" cy="45" r="35" fill="url(#faceGrad)" filter="url(#glow)" />
+    <circle cx="50" cy="45" r="${faceVariation ? 38 : 35}" 
+            fill="url(#faceGrad)" filter="url(#softShadow)" />
     
     <!-- Eyes -->`;
   
   if (eyeType === 0) {
     svg += `<circle cx="42" cy="40" r="3" fill="${colors[2]}" />
-            <circle cx="58" cy="40" r="3" fill="${colors[2]}" />`;
+            <circle cx="58" cy="40" r="3" fill="${colors[2]}" />
+            <circle cx="43" cy="38" r="1" fill="white" opacity="0.8"/>
+            <circle cx="59" cy="38" r="1" fill="white" opacity="0.8"/>`;
+  } else if (eyeType === 1) {
+    svg += `<ellipse cx="42" cy="40" rx="4" ry="3" fill="${colors[2]}" />
+            <ellipse cx="58" cy="40" rx="4" ry="3" fill="${colors[2]}" />
+            <ellipse cx="43" cy="38" rx="2" ry="1.5" fill="white" opacity="0.9"/>
+            <ellipse cx="59" cy="38" rx="2" ry="1.5" fill="white" opacity="0.9"/>`;
   } else {
-    svg += `<path d="M39 40 L45 40" stroke="${colors[2]}" stroke-width="2" />
-            <path d="M55 40 L61 40" stroke="${colors[2]}" stroke-width="2" />`;
+    svg += `<path d="M39 40 L45 40" stroke="${colors[2]}" stroke-width="2" stroke-linecap="round" />
+            <path d="M55 40 L61 40" stroke="${colors[2]}" stroke-width="2" stroke-linecap="round" />`;
   }
   
   // Mouth
@@ -66,9 +89,30 @@ export function generateAvatarSVG(seed: number = 42, primaryColor: string = '#8b
             <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite" />
           </circle>`;
   
+  // Mouth
+  svg += `<path d="M 45 55 Q 50 60 55 55" stroke="${colors[1]}" stroke-width="2" fill="none" stroke-linecap="round" />`;
+  
   svg += `</svg>`;
   
   return sanitizeSvg(svg);
+}
+
+// Helper function for simple hair generation
+function generateSimpleHair(hairType: number, colors: string[]): string {
+  switch (hairType) {
+    case 1:
+      return `<ellipse cx="50" cy="30" rx="40" ry="25" fill="url(#hairGrad)" />`;
+    case 2:
+      return `<path d="M 50 20 Q 20 15 15 40 Q 15 60 25 65 Q 50 70 75 65 Q 85 60 85 40 Q 80 15 50 20" 
+              fill="url(#hairGrad)" />`;
+    case 3:
+      return `<circle cx="35" cy="35" r="15" fill="${colors[3]}" />
+              <circle cx="50" cy="25" r="18" fill="${colors[3]}" />
+              <circle cx="65" cy="35" r="15" fill="${colors[3]}" />`;
+    default:
+      return `<path d="M 50 25 Q 25 20 20 45 Q 18 65 30 70 Q 50 75 70 70 Q 82 65 80 45 Q 75 20 50 25" 
+              fill="url(#hairGrad)" />`;
+  }
 }
 
 export function generatePatternSVG(options: SVGOptions = {}): string {
