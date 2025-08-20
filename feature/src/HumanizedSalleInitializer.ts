@@ -17,11 +17,32 @@ export class HumanizedSalleInitializer {
   /**
    * Initialize and register the humanized features
    */
-  initialize(): boolean {
+  async initialize(): Promise<boolean> {
     try {
       const registration = this.plugin.register();
-      this.registry.registerPlugin(registration.id, registration.handlers);
-      console.log('Humanized Salle features initialized successfully');
+      
+      // Create a proper plugin object according to PluginRegistry interface
+      const pluginObject = {
+        id: 'humanized-salle-1.0',
+        name: 'Humanized Sallie',
+        version: '1.0.0',
+        description: 'Advanced human-like features for Sallie',
+        author: 'Sallie Enhancement Team',
+        category: 'ai' as const,
+        enabled: true,
+        permissions: ['user-data', 'personalization'],
+        health: 'healthy' as const,
+        lastUpdated: new Date(),
+        initialize: async () => {
+          // Any initialization logic here
+          console.log('Humanized Salle plugin initialized');
+        },
+        // Store handlers in the config for use
+        config: { handlers: registration.handlers }
+      };
+      
+      await this.registry.registerPlugin(pluginObject);
+      console.log('Humanized Salle features registered successfully');
       return true;
     } catch (error) {
       console.error('Failed to initialize Humanized Salle features:', error);
