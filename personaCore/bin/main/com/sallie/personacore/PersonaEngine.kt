@@ -4,7 +4,7 @@
  * Function: Core persona engine managing behavioral patterns and responses.
  * Got it, love.
  */
-package com.sallie.personaCore
+package com.sallie.personacore
 
 import com.sallie.tone.ToneProfile
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,13 +32,13 @@ class PersonaEngine {
             situation.requiresDirectness -> PersonaMood.FOCUSED
             else -> PersonaMood.STEADY
         }
-        
+
         _currentMood.value = newMood
-        
+
         // Adjust profile based on what user needs right now
         _activeProfile.value = when {
             userState.needsEncouragement -> PersonaProfile.SOUL_CARE
-            userState.needsAccountability -> PersonaProfile.TOUGH_LOVE  
+            userState.needsAccountability -> PersonaProfile.TOUGH_LOVE
             userState.needsGuidance -> PersonaProfile.WISE_SISTER
             else -> PersonaProfile.BALANCED
         }
@@ -67,17 +67,17 @@ class PersonaEngine {
 }
 
 enum class PersonaMood {
-    STEADY,      // Balanced, ready for anything
-    FOCUSED,     // Direct, cut-to-the-chase mode
-    SUPPORTIVE,  // Extra care and encouragement
-    GENTLE_PUSH  // Motivation with extra warmth
+    STEADY, // Balanced, ready for anything
+    FOCUSED, // Direct, cut-to-the-chase mode
+    SUPPORTIVE, // Extra care and encouragement
+    GENTLE_PUSH // Motivation with extra warmth
 }
 
 enum class PersonaProfile {
-    TOUGH_LOVE,   // Direct, accountability-focused
-    SOUL_CARE,    // Nurturing, supportive
-    WISE_SISTER,  // Balanced guidance
-    BALANCED      // Adaptive based on context
+    TOUGH_LOVE, // Direct, accountability-focused
+    SOUL_CARE, // Nurturing, supportive
+    WISE_SISTER, // Balanced guidance
+    BALANCED // Adaptive based on context
 }
 
 data class UserContext(

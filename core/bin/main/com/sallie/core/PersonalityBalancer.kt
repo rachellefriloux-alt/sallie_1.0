@@ -12,7 +12,7 @@ class PersonalityBalancer {
     }
 
     fun getTrait(trait: String): Int = traits[trait] ?: 0
-    fun balance(): String = "Personality balanced: ${traits.toString()}"
+    fun balance(): String = "Personality balanced: $traits"
     // personaHistory property acts as getter
 
     // Future: add hooks for AI, device, cloud integrations
@@ -22,7 +22,7 @@ class PersonalityBalancer {
         val currentMax = traits.values.maxOrNull() ?: return
         if (currentMax == 0) return
         val factor = maxValue.toDouble() / currentMax.toDouble()
-        traits = traits.mapValues { (_, v) -> (v * factor).toInt().coerceIn(0,maxValue) }.toMutableMap()
+        traits = traits.mapValues { (_, v) -> (v * factor).toInt().coerceIn(0, maxValue) }.toMutableMap()
         personaHistory.add(traits.toMap())
     }
 
@@ -34,7 +34,7 @@ class PersonalityBalancer {
 
     fun adaptiveAdjust(signal: String) {
         // Simple heuristic mapping
-        when(signal.lowercase()) {
+        when (signal.lowercase()) {
             "empathy" -> setTrait("empathy", getTrait("empathy") + 3)
             "focus" -> setTrait("focus", getTrait("focus") + 2)
             "creativity" -> setTrait("creativity", getTrait("creativity") + 4)

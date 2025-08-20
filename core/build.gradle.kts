@@ -6,7 +6,7 @@
  */
 
 plugins {
-    kotlin("jvm") version "1.9.23"
+    kotlin("jvm")
     // Removed application plugin to avoid main class issues
 }
 
@@ -21,10 +21,8 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
+kotlin {
+    jvmToolchain(17)
 }
 
 sourceSets {

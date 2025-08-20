@@ -9,18 +9,18 @@ package com.sallie.core.policy
  * Got it, love.
  */
 object PolicyEngine {
-    
+
     data class Decision(
         val allow: Boolean,
         val reason: String
     )
-    
+
     private val policies = mapOf(
         "log_note" to { _: Map<String, Any> -> Decision(true, "Local logging allowed") },
         "adjust_mood" to { _: Map<String, Any> -> Decision(true, "Mood adjustment is core functionality") },
         "network_call" to { _: Map<String, Any> -> Decision(false, "Network calls prohibited - privacy first") },
         "analytics" to { _: Map<String, Any> -> Decision(false, "Analytics violate Salle's privacy constitution") },
-        "device_control" to { params: Map<String, Any> -> 
+        "device_control" to { params: Map<String, Any> ->
             val action = params["action"] as? String
             when (action) {
                 "volume", "brightness", "call", "text" -> Decision(true, "Basic device control allowed")
@@ -28,18 +28,17 @@ object PolicyEngine {
             }
         }
     )
-    
+
     fun evaluate(capability: String, params: Map<String, Any> = emptyMap()): Decision {
-        val policy = policies[capability] 
-            ?: return Decision(false, "Unknown capability: $capability")
-        
+        val policy = policies[capability] ?: return Decision(false, "Unknown capability: $capability")
+
         return try {
             policy(params)
         } catch (e: Exception) {
             Decision(false, "Policy evaluation error: ${e.message}")
         }
     }
-    
+
     fun registerPolicy(capability: String, policy: (Map<String, Any>) -> Decision) {
         // In a more complete implementation, this would allow dynamic policy registration
         // For now, keeping it simple and secure

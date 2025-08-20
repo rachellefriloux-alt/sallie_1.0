@@ -11,6 +11,7 @@ plugins {
 
 dependencies {
     implementation(project(":tone"))
+    implementation(project(":values"))
     implementation(project(":responseTemplates"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
 

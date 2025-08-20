@@ -1,10 +1,8 @@
 package com.sallie.feature
 
-import kotlin.math.min
-
 /** Basic in-memory NLP utilities (lightweight, offline) */
 object NLPEngine {
-    private val stopWords = setOf("the","and","a","to","of","in","is","it","for","on","that","this")
+    private val stopWords = setOf("the", "and", "a", "to", "of", "in", "is", "it", "for", "on", "that", "this")
 
     fun summarize(text: String, maxSentences: Int = 2): String {
         if (text.isBlank()) return ""
@@ -22,10 +20,10 @@ object NLPEngine {
     }
 
     fun sentiment(text: String): Double { // naive sentiment score [-1,1]
-        val positive = listOf("love","great","happy","calm","progress","win")
-        val negative = listOf("sad","tired","angry","blocked","fail","stress")
+        val positive = listOf("love", "great", "happy", "calm", "progress", "win")
+        val negative = listOf("sad", "tired", "angry", "blocked", "fail", "stress")
         val words = text.lowercase().split(" ")
         val score = words.count { it in positive } - words.count { it in negative }
-        return (score.toDouble() / (words.size.coerceAtLeast(1))).coerceIn(-1.0,1.0)
+        return (score.toDouble() / (words.size.coerceAtLeast(1))).coerceIn(-1.0, 1.0)
     }
 }
