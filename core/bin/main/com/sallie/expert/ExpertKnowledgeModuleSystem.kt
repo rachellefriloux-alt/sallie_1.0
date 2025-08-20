@@ -38,6 +38,8 @@ class ExpertKnowledgeModuleSystem(
     private val parentingExpertModule = ParentingExpertModule(valueSystem)
     private val socialIntelligenceModule = SocialIntelligenceModule(valueSystem, memorySystem)
     private val lifeCoachingModule = LifeCoachingModule(valueSystem, memorySystem, personalityProfile)
+    private val financialAdvisorModule = FinancialAdvisorModule(valueSystem, memorySystem)
+    private val entrepreneurshipModule = EntrepreneurshipModule(valueSystem, memorySystem)
     private val crossDomainKnowledgeFramework = CrossDomainKnowledgeFramework()
 
     /**
@@ -51,6 +53,8 @@ class ExpertKnowledgeModuleSystem(
         domainScores[ExpertDomain.PARENTING] = parentingExpertModule.calculateRelevanceScore(query)
         domainScores[ExpertDomain.SOCIAL] = socialIntelligenceModule.calculateRelevanceScore(query)
         domainScores[ExpertDomain.LIFE_COACHING] = lifeCoachingModule.calculateRelevanceScore(query)
+        domainScores[ExpertDomain.FINANCIAL] = financialAdvisorModule.calculateRelevanceScore(query)
+        domainScores[ExpertDomain.ENTREPRENEURSHIP] = entrepreneurshipModule.calculateRelevanceScore(query)
         
         return domainScores.maxByOrNull { it.value }?.key ?: ExpertDomain.GENERAL
     }
@@ -79,6 +83,8 @@ class ExpertKnowledgeModuleSystem(
             ExpertDomain.PARENTING -> parentingExpertModule.provideGuidance(query, detailLevel)
             ExpertDomain.SOCIAL -> socialIntelligenceModule.provideGuidance(query, detailLevel)
             ExpertDomain.LIFE_COACHING -> lifeCoachingModule.provideGuidance(query, detailLevel)
+            ExpertDomain.FINANCIAL -> financialAdvisorModule.provideGuidance(query, detailLevel)
+            ExpertDomain.ENTREPRENEURSHIP -> entrepreneurshipModule.provideGuidance(query, detailLevel)
             ExpertDomain.GENERAL -> provideCrossDomainGuidance(query, detailLevel)
         }
         
@@ -103,6 +109,8 @@ class ExpertKnowledgeModuleSystem(
         domainRelevance[ExpertDomain.PARENTING] = parentingExpertModule.calculateRelevanceScore(query)
         domainRelevance[ExpertDomain.SOCIAL] = socialIntelligenceModule.calculateRelevanceScore(query)
         domainRelevance[ExpertDomain.LIFE_COACHING] = lifeCoachingModule.calculateRelevanceScore(query)
+        domainRelevance[ExpertDomain.FINANCIAL] = financialAdvisorModule.calculateRelevanceScore(query)
+        domainRelevance[ExpertDomain.ENTREPRENEURSHIP] = entrepreneurshipModule.calculateRelevanceScore(query)
         
         // Get guidance from relevant domains
         val domainGuidance = mutableListOf<DomainSpecificGuidance>()
@@ -114,6 +122,8 @@ class ExpertKnowledgeModuleSystem(
                     ExpertDomain.PARENTING -> parentingExpertModule.provideGuidance(query, detailLevel)
                     ExpertDomain.SOCIAL -> socialIntelligenceModule.provideGuidance(query, detailLevel)
                     ExpertDomain.LIFE_COACHING -> lifeCoachingModule.provideGuidance(query, detailLevel)
+                    ExpertDomain.FINANCIAL -> financialAdvisorModule.provideGuidance(query, detailLevel)
+                    ExpertDomain.ENTREPRENEURSHIP -> entrepreneurshipModule.provideGuidance(query, detailLevel)
                     else -> continue
                 }
                 
@@ -152,6 +162,8 @@ class ExpertKnowledgeModuleSystem(
             ExpertDomain.PARENTING -> "You might want to consult with family counseling professionals who can provide personalized guidance."
             ExpertDomain.SOCIAL -> "Consider discussing this with trusted friends or a professional counselor who understands your personal values."
             ExpertDomain.LIFE_COACHING -> "This might be a good topic to reflect on personally or discuss with a professional life coach who aligns with your values."
+            ExpertDomain.FINANCIAL -> "Consider consulting with a certified financial advisor who can provide personalized financial guidance for your situation."
+            ExpertDomain.ENTREPRENEURSHIP -> "You might want to consult with a business advisor or mentor who has experience in this specific area of entrepreneurship."
             ExpertDomain.GENERAL -> "For this type of question, consulting with a relevant professional would be the best approach."
         }
         
@@ -209,12 +221,16 @@ class ExpertKnowledgeModuleSystem(
             ExpertDomain.PARENTING -> parentingExpertModule.updateKnowledge(information)
             ExpertDomain.SOCIAL -> socialIntelligenceModule.updateKnowledge(information)
             ExpertDomain.LIFE_COACHING -> lifeCoachingModule.updateKnowledge(information)
+            ExpertDomain.FINANCIAL -> financialAdvisorModule.updateKnowledge(information)
+            ExpertDomain.ENTREPRENEURSHIP -> entrepreneurshipModule.updateKnowledge(information)
             ExpertDomain.GENERAL -> {
                 // Update all potentially relevant modules
                 legalAdvisorModule.updateKnowledge(information)
                 parentingExpertModule.updateKnowledge(information)
                 socialIntelligenceModule.updateKnowledge(information)
                 lifeCoachingModule.updateKnowledge(information)
+                financialAdvisorModule.updateKnowledge(information)
+                entrepreneurshipModule.updateKnowledge(information)
             }
         }
         
@@ -779,6 +795,14 @@ class CrossDomainKnowledgeFramework {
                 ExpertDomain.LIFE_COACHING -> {
                     allDisclaimers.add("Personal growth is unique to each individual.")
                     allDisclaimers.add("Consider how this advice aligns with your personal values.")
+                }
+                ExpertDomain.FINANCIAL -> {
+                    allDisclaimers.add("This guidance is for informational purposes only and should not be considered professional financial advice.")
+                    allDisclaimers.add("Financial decisions should be made based on your complete financial picture, goals, and personal values.")
+                }
+                ExpertDomain.ENTREPRENEURSHIP -> {
+                    allDisclaimers.add("This guidance is for informational purposes only and should not be considered professional business advice.")
+                    allDisclaimers.add("Business decisions should be made based on thorough research and consideration of your specific market and circumstances.")
                 }
                 else -> {
                     // General disclaimer
@@ -1385,6 +1409,8 @@ enum class ExpertDomain(val name: String, val contextPrefix: String) {
     PARENTING("Parenting Expertise", "As a parenting consideration"),
     SOCIAL("Social Intelligence", "In terms of social dynamics"),
     LIFE_COACHING("Life Coaching", "For personal development"),
+    FINANCIAL("Financial Advisory", "From a financial perspective"),
+    ENTREPRENEURSHIP("Entrepreneurship", "From a business perspective"),
     GENERAL("General Knowledge", "Generally speaking")
 }
 
@@ -1466,7 +1492,9 @@ data class ExpertKnowledgeUpdate(
     val content: String,
     val source: String,
     val reliability: Float,
-    val timestamp: Long
+    val timestamp: Long,
+    val tags: List<String> = listOf(),
+    val sourceTags: List<String> = listOf()
 )
 
 data class Reference(
