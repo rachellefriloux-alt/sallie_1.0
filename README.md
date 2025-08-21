@@ -5,12 +5,28 @@ Sallie is a next-generation Android launcher and personal AI system, designed to
 ## Features
 
 - Multi-AI orchestration (Gemini, ChatGPT, Copilot)
-- Emotional intelligence and adaptive personality
-  - Empathy & compassion layer (contextual supportive prompts)
-  - Risk-aware decision advisor (multi-factor risk + empathy + logic)
+- Hierarchical Memory System
+  - Episodic memory for personal experiences
+  - Semantic memory for factual knowledge
+  - Emotional memory for affective associations
+- Adaptive Learning Engine
+  - Pattern recognition across domains
+  - Experiential learning from user interactions
+  - Knowledge synthesis and adaptation
+- Advanced Personality System
+  - Core vs. adaptive personality traits
+  - Context-aware personality expression
+  - Evolutionary personality development
+- Emotional Intelligence
+  - 30+ emotional states recognition
+  - Empathic response generation
+  - Feedback-based emotional calibration
+- Communication System
+  - Dynamic tone adaptation based on context
+  - Natural language understanding and generation
+  - Social intelligence and relationship modeling
 - Full device control and automation
 - Dynamic theming and UI customization
-- Persistent memory and context
 - Voice, chat, and system integrations
 - Modular skill/plugin system
   - Research + capability execution pipeline (auto-select feasible actions)

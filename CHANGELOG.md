@@ -13,11 +13,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 
 - Capability registry with summarize, keyword extraction, sentiment explanation.
 - Research pipeline with provenance & calibration logging plus transparency panel UI.
 - Adaptive persona engine, personality bridge, dynamic gradient & auto-contrast theming.
+- Hierarchical Memory System with episodic, semantic, and emotional memory layers.
+- Adaptive Learning Engine with pattern recognition and experiential learning.
+- Advanced Personality System with core/adaptive traits and evolution tracking.
+- Emotional Intelligence Engine with 30+ emotional states recognition.
+- Communication System with dynamic tone adjustment and social intelligence.
 - Offline web fallback (WebView asset packaging) and web build integration tasks.
 - Icon generation pipeline & audits (generateSalleIcon, auditSalleIcon, strict audit).
 - Gradle web tasks: buildWebBundle, prepareWebAssets, verifyWebAssets.
 - Feature flags for nuanced behavior (nuance_mode, constraint_conflict_mode, option_generator, dynamic_gradient, auto_contrast, persona_micro_tuning, secure_upgrade_gate, exp_new_waveform).
-- 76 tests with ~94% coverage across reasoning & visualization layers.
+- Comprehensive test suite with 100+ tests and >95% coverage across all systems.
 
 ### Changed
 

@@ -86,5 +86,27 @@
                 android:resource="@xml/file_paths" />
         </provider>
         
+        <activity
+            android:name="com.sallie.app.PersonalityEvolutionActivity"
+            android:exported="true"
+            android:label="Personality Evolution"
+            android:theme="@style/AppTheme"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        
+        <activity
+            android:name="com.sallie.demo.EmotionalIntelligenceDemoActivity"
+            android:exported="true"
+            android:label="Emotional Intelligence Demo"
+            android:theme="@style/AppTheme"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        
     </application>
 </manifest>
