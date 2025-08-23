@@ -8,6 +8,7 @@ package com.sallie.core
 
 import com.sallie.core.interfaces.IProactiveAssistanceEngine
 import com.sallie.core.interfaces.IAdvancedAPIIntegration
+import com.sallie.feature.DeviceControlManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.ConcurrentHashMap
@@ -85,7 +86,7 @@ class HumanLikeCapabilityOrchestrator {
         
         // Initialize cross-system connections
         proactiveAssistance.initialize(emotionalIntelligence, learningEngine, 
-            com.sallie.feature.DeviceControlManager())
+            DeviceControlManager())
     }
     
     /**
