@@ -27,13 +27,13 @@ class AdaptiveLearningManager(
     
     // Initialize the adaptive learning engine with default configuration
     private val learningEngine by lazy {
-        val config = AdaptiveLearningEngine.LearningConfiguration(
+        val config = com.sallie.core.learning.AdaptiveLearningEngine.LearningConfiguration(
             learningRate = 0.1f,
             minInteractionsForInsight = 5,
             insightConfidenceThreshold = 0.65f,
             experimentationRate = 0.05f
         )
-        AdaptiveLearningEngine(memorySystem, config)
+        com.sallie.core.learning.AdaptiveLearningEngine(memorySystem, config)
     }
     
     // Connector for UI components

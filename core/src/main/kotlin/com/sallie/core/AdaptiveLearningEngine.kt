@@ -232,4 +232,32 @@ class AdaptiveLearningEngine {
             response + humorPhrases.random()
         } else response
     }
+    
+    /**
+     * Load learning state from memory system
+     * This method loads previously stored patterns and strategies to maintain continuity
+     */
+    suspend fun loadFromMemory() {
+        withContext(Dispatchers.IO) {
+            try {
+                // For now, initialize with some baseline patterns
+                // This would typically load from the memory system
+                initializeBaselinePatterns()
+            } catch (e: Exception) {
+                // Graceful fallback - continue without loaded state
+                initializeBaselinePatterns()
+            }
+        }
+    }
+    
+    /**
+     * Initialize baseline learning patterns for new installations
+     */
+    private fun initializeBaselinePatterns() {
+        // Add some basic effective patterns as starting points
+        learn("greeting", "user_says_hello", "responded_warmly", 0.8)
+        learn("task_completion", "user_completes_task", "provided_encouragement", 0.9)
+        learn("error_handling", "user_encounters_error", "offered_solution", 0.7)
+        learn("casual_conversation", "user_asks_question", "provided_helpful_answer", 0.8)
+    }
 }

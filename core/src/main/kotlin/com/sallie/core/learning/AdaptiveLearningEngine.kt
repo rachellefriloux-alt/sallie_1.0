@@ -1179,4 +1179,57 @@ class AdaptiveLearningEngine(
             return false
         }
     }
+    
+    /**
+     * Load learning state from memory system
+     */
+    suspend fun loadFromMemory(): Boolean {
+        val memorySystem = memorySystem ?: return false
+        
+        try {
+            // Load insights from semantic memory with learning tags
+            val learningMemories = memorySystem.searchSemanticMemories(
+                query = "user_insight",
+                includeMetadata = true,
+                limit = 100
+            )
+            
+            // Restore insights from memory
+            val restoredInsights = learningMemories.mapNotNull { memory ->
+                val metadata = memory.metadata
+                val insightId = metadata["insightId"] as? String
+                val categoryStr = metadata["category"] as? String
+                val confidenceLevelStr = metadata["confidenceLevel"] as? String
+                
+                if (insightId != null && categoryStr != null && confidenceLevelStr != null) {
+                    try {
+                        val category = LearningCategory.valueOf(categoryStr)
+                        val confidenceLevel = com.sallie.core.learning.AdaptiveLearningEngine.ConfidenceLevel.valueOf(confidenceLevelStr)
+                        
+                        UserInsight(
+                            id = insightId,
+                            category = category,
+                            description = memory.content.removePrefix("User insight: "),
+                            confidence = memory.certainty.toFloat(),
+                            confidenceLevel = confidenceLevel,
+                            isActive = true,
+                            createdAt = LocalDateTime.now(), // Could extract from metadata if stored
+                            lastUpdatedAt = LocalDateTime.now()
+                        )
+                    } catch (e: Exception) {
+                        null // Skip malformed insights
+                    }
+                } else null
+            }
+            
+            // Update the insights state
+            _insights.value = restoredInsights
+            
+            println("Loaded ${restoredInsights.size} insights from memory")
+            return true
+        } catch (e: Exception) {
+            println("Error loading learning state from memory: ${e.message}")
+            return false
+        }
+    }
 }

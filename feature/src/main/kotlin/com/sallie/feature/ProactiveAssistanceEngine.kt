@@ -8,6 +8,7 @@ package com.sallie.feature
 
 import com.sallie.core.AdvancedEmotionalIntelligence
 import com.sallie.core.AdaptiveLearningEngine
+import com.sallie.core.interfaces.IProactiveAssistanceEngine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.ConcurrentHashMap
@@ -16,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap
  * Advanced proactive assistance system that anticipates user needs,
  * breaks down complex tasks, and provides autonomous task completion.
  */
-class ProactiveAssistanceEngine {
+class ProactiveAssistanceEngine : IProactiveAssistanceEngine {
     
     data class TaskBreakdown(
         val mainTask: String,
@@ -81,6 +82,131 @@ class ProactiveAssistanceEngine {
         this.learningEngine = learningEngine
         this.deviceControl = deviceControl
         initializeAutomationCapabilities()
+    }
+    
+    // Implementation of IProactiveAssistanceEngine interface methods
+    
+    /**
+     * Generate proactive insights based on user context (interface implementation)
+     */
+    override fun generateProactiveInsights(userContext: Map<String, Any>): List<String> {
+        val recentActivity = userContext["recent_activity"] as? List<String> ?: emptyList()
+        val timeContext = userContext["time_context"] as? String ?: "general"
+        
+        val insights = generateProactiveInsights(recentActivity, timeContext)
+        return insights.map { "${it.insight} - ${it.actionable}" }
+    }
+    
+    /**
+     * Suggest automation opportunities for a task (interface implementation)
+     */
+    override fun suggestAutomation(taskDescription: String): List<String> {
+        val automationCapability = automationDatabase[taskDescription.lowercase()]
+        return if (automationCapability?.canAutomate == true) {
+            listOf(
+                "This task can be automated with ${(automationCapability.successProbability * 100).toInt()}% confidence",
+                "Automation steps: ${automationCapability.automationSteps.joinToString(" → ")}",
+                "Required permissions: ${automationCapability.requiredPermissions.joinToString(", ")}"
+            )
+        } else {
+            val partialAutomations = automationDatabase.values.filter { capability ->
+                capability.automationSteps.any { step -> 
+                    taskDescription.lowercase().contains(step.replace("_", " "))
+                }
+            }
+            if (partialAutomations.isNotEmpty()) {
+                listOf("Partial automation possible for: ${partialAutomations.joinToString { it.task }}")
+            } else {
+                listOf("No direct automation available, but I can break this task down into manageable steps")
+            }
+        }
+    }
+    
+    /**
+     * Anticipate user needs based on recent actions (interface implementation)
+     */
+    override fun anticipateUserNeeds(recentActions: List<String>): List<String> {
+        val patterns = identifyBehaviorPatterns(recentActions)
+        val needs = mutableListOf<String>()
+        
+        // Check for communication patterns
+        if (recentActions.any { it.contains("email") || it.contains("message") }) {
+            needs.add("You might need help managing your communications")
+        }
+        
+        // Check for research patterns  
+        if (recentActions.any { it.contains("research") || it.contains("find") }) {
+            needs.add("I can help organize your research findings")
+        }
+        
+        // Check for planning patterns
+        if (recentActions.any { it.contains("plan") || it.contains("schedule") }) {
+            needs.add("Time to review your upcoming priorities?")
+        }
+        
+        // Check for overwhelm signals
+        val overwhelmWords = listOf("stressed", "overwhelmed", "too much", "busy")
+        if (recentActions.any { action -> overwhelmWords.any { action.lowercase().contains(it) } }) {
+            needs.add("Let me help break down whatever feels overwhelming right now")
+        }
+        
+        return needs.ifEmpty { listOf("I'm here to help with whatever you need, love.") }
+    }
+    
+    /**
+     * Prioritize suggestions based on urgency (interface implementation)
+     */
+    override fun prioritizeSuggestions(suggestions: List<String>, urgency: Int): List<String> {
+        return suggestions.sortedByDescending { suggestion ->
+            val urgencyScore = when (urgency) {
+                in 8..10 -> {
+                    val urgentKeywords = listOf("critical", "urgent", "asap", "important", "deadline")
+                    urgentKeywords.count { suggestion.lowercase().contains(it) } * 10
+                }
+                in 5..7 -> {
+                    val moderateKeywords = listOf("should", "need", "help", "organize")
+                    moderateKeywords.count { suggestion.lowercase().contains(it) } * 5
+                }
+                else -> 1
+            }
+            urgencyScore
+        }
+    }
+    
+    /**
+     * Task analysis and breakdown (interface implementation)
+     */
+    override suspend fun analyzeAndBreakdownTask(taskDescription: String, userContext: String): Any {
+        return analyzeAndBreakdownTask(taskDescription, userContext)
+    }
+    
+    /**
+     * Autonomous task completion attempt (interface implementation) 
+     */
+    override suspend fun attemptAutonomousTaskCompletion(task: String, userPermissions: List<String>): String {
+        return attemptAutonomousTaskCompletion(task, userPermissions)
+    }
+    
+    /**
+     * Step-by-step guidance (interface implementation)
+     */
+    override fun provideStepByStepGuidance(taskId: String, userExperience: String, stepCallback: (String) -> Unit): String {
+        return provideStepByStepGuidance(taskId, userExperience, stepCallback)
+    }
+    
+    /**
+     * Monitor for opportunities (interface implementation)
+     */
+    override fun monitorForOpportunities(userActivity: String, interval: Long): List<String> {
+        // Simple implementation - return proactive suggestions
+        return anticipateUserNeeds(listOf(userActivity))
+    }
+    
+    /**
+     * Get task management insights (interface implementation)
+     */
+    override fun getTaskManagementInsights(): Map<String, Any> {
+        return getTaskManagementInsights()
     }
     
     /**
