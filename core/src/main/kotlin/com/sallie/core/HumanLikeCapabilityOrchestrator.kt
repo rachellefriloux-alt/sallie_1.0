@@ -110,16 +110,14 @@ class HumanLikeCapabilityOrchestrator {
         )
         
         // Step 3: Generate proactive insights
-        val proactiveInsights = proactiveAssistance.generateProactiveInsights(
-            context.conversationHistory.map { it.first },
-            context.timeContext
+        val userContextMap = mapOf(
+            "recent_activity" to context.conversationHistory.map { it.first },
+            "time_context" to context.timeContext
         )
+        val proactiveInsights = proactiveAssistance.generateProactiveInsights(userContextMap)
         
-        // Step 4: Check for automation opportunities
-        val automationSuggestions = apiIntegration.suggestAutomations(
-            context.taskContext,
-            context.conversationHistory.map { it.first }.takeLast(5)
-        )
+        // Step 4: Check for automation opportunities  
+        val automationSuggestions = proactiveAssistance.suggestAutomation(context.taskContext)
         
         // Step 5: Record interaction for memory and learning
         memoryManager.recordConversation(context.userInput, adaptedResponse)

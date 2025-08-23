@@ -15,4 +15,11 @@ interface IProactiveAssistanceEngine {
     fun suggestAutomation(taskDescription: String): List<String>
     fun anticipateUserNeeds(recentActions: List<String>): List<String>
     fun prioritizeSuggestions(suggestions: List<String>, urgency: Int): List<String>
+    
+    // Additional methods for task management
+    suspend fun analyzeAndBreakdownTask(taskDescription: String, userContext: String = ""): Any
+    suspend fun attemptAutonomousTaskCompletion(task: String, userPermissions: List<String>): String
+    fun provideStepByStepGuidance(taskId: String, userExperience: String, stepCallback: (String) -> Unit): String
+    fun monitorForOpportunities(userActivity: String, interval: Long): List<String>
+    fun getTaskManagementInsights(): Map<String, Any>
 }

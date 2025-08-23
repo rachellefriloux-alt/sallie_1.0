@@ -174,6 +174,42 @@ class ProactiveAssistanceEngine : IProactiveAssistanceEngine {
     }
     
     /**
+     * Task analysis and breakdown (interface implementation)
+     */
+    override suspend fun analyzeAndBreakdownTask(taskDescription: String, userContext: String): Any {
+        return analyzeAndBreakdownTask(taskDescription, userContext)
+    }
+    
+    /**
+     * Autonomous task completion attempt (interface implementation) 
+     */
+    override suspend fun attemptAutonomousTaskCompletion(task: String, userPermissions: List<String>): String {
+        return attemptAutonomousTaskCompletion(task, userPermissions)
+    }
+    
+    /**
+     * Step-by-step guidance (interface implementation)
+     */
+    override fun provideStepByStepGuidance(taskId: String, userExperience: String, stepCallback: (String) -> Unit): String {
+        return provideStepByStepGuidance(taskId, userExperience, stepCallback)
+    }
+    
+    /**
+     * Monitor for opportunities (interface implementation)
+     */
+    override fun monitorForOpportunities(userActivity: String, interval: Long): List<String> {
+        // Simple implementation - return proactive suggestions
+        return anticipateUserNeeds(listOf(userActivity))
+    }
+    
+    /**
+     * Get task management insights (interface implementation)
+     */
+    override fun getTaskManagementInsights(): Map<String, Any> {
+        return getTaskManagementInsights()
+    }
+    
+    /**
      * Analyze task and provide comprehensive breakdown
      */
     suspend fun analyzeAndBreakdownTask(taskDescription: String, userContext: String = ""): TaskBreakdown = 
