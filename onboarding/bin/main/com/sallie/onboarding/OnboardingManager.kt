@@ -9,13 +9,13 @@ package com.sallie.onboarding
  * Got it, love.
  */
 object OnboardingManager {
-    
+
     data class OnboardingState(
         val step: Int = 0,
         val completed: Boolean = false,
         val userPreferences: Map<String, String> = emptyMap()
     )
-    
+
     private val onboardingSteps = listOf(
         "Welcome to Salle - Your loyal digital companion",
         "Set your communication preferences",
@@ -23,9 +23,9 @@ object OnboardingManager {
         "Configure privacy settings",
         "Complete setup"
     )
-    
+
     private var state = OnboardingState()
-    
+
     fun getCurrentStep(): String {
         return if (state.step < onboardingSteps.size) {
             onboardingSteps[state.step]
@@ -33,7 +33,7 @@ object OnboardingManager {
             "Onboarding complete"
         }
     }
-    
+
     fun nextStep(): String {
         if (state.step < onboardingSteps.size - 1) {
             state = state.copy(step = state.step + 1)
@@ -42,15 +42,15 @@ object OnboardingManager {
         }
         return getCurrentStep()
     }
-    
+
     fun setPreference(key: String, value: String) {
         state = state.copy(
             userPreferences = state.userPreferences + (key to value)
         )
     }
-    
+
     fun isCompleted(): Boolean = state.completed
-    
+
     fun getProgress(): Float {
         return state.step.toFloat() / onboardingSteps.size.toFloat()
     }

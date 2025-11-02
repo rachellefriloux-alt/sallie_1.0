@@ -16,8 +16,6 @@ android {
 
     defaultConfig {
         applicationId = "com.sallie.launcher"
-        minSdk = 21
-        targetSdk = 34
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -53,17 +51,6 @@ android {
         }
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-        debug { }
-    }
-
     buildFeatures {
         compose = true
         buildConfig = true
@@ -84,10 +71,6 @@ android {
     }
 
     packaging {
-        resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
-    }
-
-    packagingOptions {
         resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
     }
 }
